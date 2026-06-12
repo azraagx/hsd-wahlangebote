@@ -1,0 +1,6 @@
+/* HSD Schriftarten */
+/* Inter - nur für HSD Logo */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* Segoe UI ist eine System-Font, kein Import nötig */
+/* Fallback wird im CSS definiert */
