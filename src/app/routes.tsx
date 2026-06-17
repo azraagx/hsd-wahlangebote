@@ -8,8 +8,10 @@ import Preview from "./pages/Preview";
 import Success from "./pages/Success";
 import PublishedList from "./pages/PublishedList";
 import PublishedDetail from "./pages/PublishedDetail";
+import StudentPortal from "./pages/StudentPortal";
 
 export const router = createBrowserRouter([
+  { path: "/student", Component: StudentPortal },
   {
     path: "/",
     Component: Layout,
