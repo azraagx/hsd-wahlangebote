@@ -34,6 +34,7 @@ import { StatusBadge } from "@/features/student-portal/components/StatusBadge";
 import { AlertBanner } from "@/features/student-portal/components/AlertBanner";
 import { CourseCard } from "@/features/student-portal/components/CourseCard";
 import { NavBar } from "@/features/student-portal/components/NavBar";
+import { ApplicationModal } from "@/features/student-portal/components/ApplicationModal";
 // ─── Design tokens from import ───────────────────────────────────────────────
 
 
@@ -1790,130 +1791,17 @@ export default function App() {
           {page === "angebotDetail" && selectedAngebot && <AngebotDetailPage angebot={selectedAngebot} setPage={setPage} onApply={handleApplyFromDetail} />}
         </main>
 
-        {/* Application Modal */}
-        {showApplicationModal && selectedAngebot && (
-          <div
-            className="fixed inset-0 flex items-center justify-center"
-            style={{ backgroundColor: "rgba(0,0,0,0.5)", zIndex: 100 }}
-            onClick={() => {
+           {showApplicationModal && selectedAngebot && (
+          <ApplicationModal
+            angebot={selectedAngebot}
+            motivationText={motivationText}
+            onMotivationTextChange={setMotivationText}
+            onCancel={() => {
               setShowApplicationModal(false);
               setMotivationText("");
             }}
-          >
-            <div
-              className="bg-white rounded-lg w-full mx-4 max-h-[85vh] overflow-y-auto"
-              style={{
-                boxShadow: "0 8px 32px rgba(0,0,0,0.2)",
-                maxWidth: selectedAngebot.bewerbungsinfo.motivationLetter ? "700px" : "550px"
-              }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="p-6">
-                <div className="flex items-start justify-between mb-4">
-                  <h2 className="text-xl font-bold" style={{ fontFamily: "'Segoe UI', sans-serif", color: HSD_DARK }}>
-                    {selectedAngebot.bewerbungsinfo.motivationLetter ? "Bewerbung schreiben" : "Bewerbung bestätigen"}
-                  </h2>
-                  <button
-                    onClick={() => {
-                      setShowApplicationModal(false);
-                      setMotivationText("");
-                    }}
-                    className="text-gray-400 hover:text-gray-600 text-2xl"
-                  >
-                    ✕
-                  </button>
-                </div>
-
-                <div className="mb-4">
-                  <p className="text-sm font-semibold mb-2" style={{ fontFamily: "'Segoe UI', sans-serif", color: HSD_DARK }}>
-                    {selectedAngebot.titel}
-                  </p>
-                  <p className="text-xs mb-4" style={{ fontFamily: "'Segoe UI', sans-serif", color: HSD_GRAY }}>
-                    {selectedAngebot.modulTyp} · {selectedAngebot.semester}
-                  </p>
-                </div>
-
-                {selectedAngebot.bewerbungsinfo.motivationLetter ? (
-                  <>
-                    <div className="mb-4">
-                      <p className="text-sm mb-4 leading-relaxed" style={{ fontFamily: "'Segoe UI', sans-serif", color: HSD_GRAY }}>
-                        {selectedAngebot.modulCategory === "Medienprojekt A" || selectedAngebot.modulCategory === "Medienprojekt B"
-                          ? "Für dieses Medienprojekt ist ein Motivationsschreiben erforderlich."
-                          : "Bitte verfassen Sie ein Motivationsschreiben für Ihre Bewerbung. Erklären Sie, warum Sie an diesem Projekt teilnehmen möchten und welche Erfahrungen oder Interessen Sie mitbringen."}
-                      </p>
-                      <label className="block text-sm font-semibold mb-2" style={{ fontFamily: "'Segoe UI', sans-serif", color: HSD_DARK }}>
-                        Motivationsschreiben *
-                      </label>
-                      <textarea
-                        value={motivationText}
-                        onChange={(e) => setMotivationText(e.target.value)}
-                        placeholder={selectedAngebot.modulCategory === "Medienprojekt A" || selectedAngebot.modulCategory === "Medienprojekt B"
-                          ? "Beschreiben Sie Ihre Motivation, Ihre Interessen und warum Sie an diesem Medienprojekt teilnehmen möchten."
-                          : "Beschreiben Sie Ihre Motivation, Ihre Interessen und warum Sie an diesem Projekt teilnehmen möchten."}
-                        className="w-full rounded-lg p-3 text-sm"
-                        style={{
-                          fontFamily: "'Segoe UI', sans-serif",
-                          color: HSD_DARK,
-                          border: `1px solid ${HSD_BORDER_LIGHT}`,
-                          minHeight: "240px",
-                          resize: "vertical"
-                        }}
-                        maxLength={3500}
-                      />
-                      <div className="flex justify-between items-center mt-2">
-                        <p className="text-xs" style={{ fontFamily: "'Segoe UI', sans-serif", color: HSD_GRAY }}>
-                          * Pflichtfeld
-                        </p>
-                        <p className="text-xs" style={{ fontFamily: "'Segoe UI', sans-serif", color: motivationText.trim().split(/\s+/).filter(w => w.length > 0).length > 3000 ? HSD_RED : HSD_GRAY }}>
-                          {motivationText.trim().length === 0 ? 0 : motivationText.trim().split(/\s+/).filter(w => w.length > 0).length} / 3500 Wörter
-                        </p>
-                      </div>
-                    </div>
-                  </>
-                ) : (
-                  <div className="mb-4">
-                    <p className="text-sm mb-4" style={{ fontFamily: "'Segoe UI', sans-serif", color: HSD_GRAY }}>
-                      Sie sind dabei, sich für dieses Angebot zu bewerben. Ihre Bewerbung wird zur Prioritätenliste hinzugefügt.
-                    </p>
-                  </div>
-                )}
-
-                <div className="flex gap-3">
-                  <button
-                    onClick={() => {
-                      setShowApplicationModal(false);
-                      setMotivationText("");
-                    }}
-                    className="flex-1 py-3 rounded-lg text-sm font-bold transition-colors"
-                    style={{
-                      backgroundColor: "white",
-                      color: HSD_GRAY,
-                      border: `1px solid ${HSD_BORDER_LIGHT}`,
-                      fontFamily: "'Segoe UI', sans-serif"
-                    }}
-                  >
-                    Abbrechen
-                  </button>
-                  <button
-                    onClick={handleApply}
-                    disabled={selectedAngebot.bewerbungsinfo.motivationLetter && motivationText.trim().length < 50}
-                    className="flex-1 py-3 rounded-lg text-sm font-bold transition-colors"
-                    style={{
-                      backgroundColor: (selectedAngebot.bewerbungsinfo.motivationLetter && motivationText.trim().length < 50) ? "#cccccc" : HSD_BLUE,
-                      color: "white",
-                      fontFamily: "'Segoe UI', sans-serif",
-                      cursor: (selectedAngebot.bewerbungsinfo.motivationLetter && motivationText.trim().length < 50) ? "not-allowed" : "pointer",
-                      opacity: (selectedAngebot.bewerbungsinfo.motivationLetter && motivationText.trim().length < 50) ? 0.6 : 1
-                    }}
-                  >
-                    {selectedAngebot.modulCategory === "Medienprojekt A" || selectedAngebot.modulCategory === "Medienprojekt B"
-                      ? "Bewerbung abschicken"
-                      : "Bewerbung absenden"}
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
+            onSubmit={handleApply}
+          />
         )}
       </div>
     </DndProvider>
