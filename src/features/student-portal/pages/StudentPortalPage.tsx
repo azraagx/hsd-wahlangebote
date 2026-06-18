@@ -3,16 +3,29 @@ import { DndProvider, useDrag, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import imgProfile from "@/imports/1440WDefault/acc4291260e1f05f1a14cc0893d23296c2967e5d.png";
 import imgCourse from "@/imports/1440WDefault/344178e81f62bc421593dc0e4202a66e0f23556b.png";
+import type {
+  Page,
+  ModulCategory,
+  StatusType,
+  Bewerbung,
+  Course,
+  ScheduleEntry,
+  ModulAngebot,
+  StudentApplication,
+} from "@/features/student-portal/types";
 
+import {
+  HSD_RED,
+  HSD_BLUE,
+  HSD_TEAL,
+  HSD_LINK,
+  HSD_DARK,
+  HSD_GRAY,
+  HSD_BORDER,
+  HSD_BORDER_LIGHT,
+} from "@/features/student-portal/styles/tokens";
 // ─── Design tokens from import ───────────────────────────────────────────────
-const HSD_RED = "#e60028";
-const HSD_BLUE = "#00afd7";
-const HSD_TEAL = "#005b70";
-const HSD_LINK = "#00718b";
-const HSD_DARK = "#1d2125";
-const HSD_GRAY = "#6a737b";
-const HSD_BORDER = "rgba(0,0,0,0.13)";
-const HSD_BORDER_LIGHT = "#dee2e6";
+
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 type Page = "home" | "bewerbungen" | "stundenplan" | "kurse" | "modulwahl" | "bmi2018" | "studienverlaufsplan" | "angebotDetail";
