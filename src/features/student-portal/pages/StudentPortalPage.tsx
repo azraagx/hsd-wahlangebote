@@ -36,6 +36,7 @@ import { CourseCard } from "@/features/student-portal/components/CourseCard";
 import { NavBar } from "@/features/student-portal/components/NavBar";
 import { ApplicationModal } from "@/features/student-portal/components/ApplicationModal";
 import { MeinBereichSubNav } from "@/features/student-portal/components/MeinBereichSubNav";
+import { DraggableApplicationCard } from "@/features/student-portal/components/DraggableApplicationCard";
 // ─── Design tokens from import ───────────────────────────────────────────────
 
 
@@ -252,97 +253,6 @@ function HomePage({ setPage }: { setPage: (p: Page) => void }) {
 
 // ─── Modulwahl Page Components ────────────────────────────────────────────────
 
-function DraggableApplicationCard({
-  app,
-  index,
-  moveCard,
-  onRemove
-}: {
-  app: StudentApplication;
-  index: number;
-  moveCard: (dragIndex: number, hoverIndex: number) => void;
-  onRemove: (id: number) => void;
-}) {
-  const [{ isDragging }, drag] = useDrag({
-    type: DND_TYPE,
-    item: () => ({ index }),
-    collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
-    }),
-  });
-
-  const [, drop] = useDrop({
-    accept: DND_TYPE,
-    hover: (item: { index: number }) => {
-      if (!item || item.index === index) return;
-      moveCard(item.index, index);
-      item.index = index;
-    },
-  });
-
-  const statusColors = {
-    pending: { bg: "#FFF3CD", text: "#856404", label: "Ausstehend" },
-    accepted: { bg: "#D4EDDA", text: "#155724", label: "Angenommen" },
-    rejected: { bg: "#F8D7DA", text: "#842029", label: "Abgelehnt" }
-  };
-
-  const statusCfg = statusColors[app.status];
-
-  const setRef = useCallback((node: HTMLDivElement | null) => {
-    drag(drop(node));
-  }, [drag, drop]);
-
-  return (
-    <div
-      ref={setRef}
-      className="bg-white rounded-lg p-4 cursor-move hover:shadow-md transition-all"
-      style={{
-        border: `2px solid ${HSD_BORDER_LIGHT}`,
-        borderLeft: `6px solid ${index === 0 ? HSD_RED : index === 1 ? HSD_BLUE : HSD_GRAY}`,
-        opacity: isDragging ? 0.5 : 1,
-      }}
-    >
-      <div className="flex items-start justify-between gap-3 mb-2">
-        <div className="flex-1">
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-lg" style={{ color: HSD_GRAY }}>☰</span>
-            <span
-              className="text-sm font-bold px-2 py-0.5 rounded"
-              style={{
-                color: "white",
-                backgroundColor: index === 0 ? HSD_RED : index === 1 ? HSD_BLUE : HSD_GRAY,
-                fontFamily: "'Segoe UI', sans-serif"
-              }}
-            >
-              Priorität {index + 1}
-            </span>
-          </div>
-          <h4 className="text-sm font-semibold mb-1" style={{ fontFamily: "'Segoe UI', sans-serif", color: HSD_DARK }}>
-            {app.titel}
-          </h4>
-          <p className="text-xs" style={{ fontFamily: "'Segoe UI', sans-serif", color: HSD_GRAY }}>
-            {app.kategorie}
-          </p>
-        </div>
-        <button
-          onClick={() => onRemove(app.id)}
-          className="text-gray-400 hover:text-red-600 transition-colors"
-          style={{ fontSize: "18px" }}
-        >
-          ✕
-        </button>
-      </div>
-      <div className="flex items-center justify-between">
-        <span
-          className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold"
-          style={{ backgroundColor: statusCfg.bg, color: statusCfg.text }}
-        >
-          {statusCfg.label}
-        </span>
-      </div>
-    </div>
-  );
-}
 
 function ModulwahlPage({ onSelectAngebot, setPage, navigateWithScroll, selectedCategory }: { onSelectAngebot?: (angebot: ModulAngebot) => void; setPage?: (p: Page) => void; navigateWithScroll?: (page: Page, section?: string) => void; selectedCategory?: ModulCategory | null }) {
   const [selectedAngebot, setSelectedAngebot] = useState<ModulAngebot | null>(null);
