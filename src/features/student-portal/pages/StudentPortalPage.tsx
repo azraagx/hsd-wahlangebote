@@ -29,6 +29,7 @@ import { bewerbungen, assignedCourses } from "@/features/student-portal/data/app
 import { coursesBySemester } from "@/features/student-portal/data/courses";
 import { schedule, TIME_SLOTS, DAYS } from "@/features/student-portal/data/schedule";
 import { modulAngebote } from "@/features/student-portal/data/moduleOffers";
+import { StatusBadge } from "@/features/student-portal/components/StatusBadge";
 // ─── Design tokens from import ───────────────────────────────────────────────
 
 
@@ -120,25 +121,6 @@ interface StudentApplication {
 
 const DND_TYPE = "APPLICATION_CARD";
 
-
-// ─── Status Badge ─────────────────────────────────────────────────────────────
-function StatusBadge({ status }: { status: StatusType }) {
-  const cfg = {
-    angenommen: { label: "Angenommen", bg: "#D4EDDA", text: "#155724", border: "#C3E6CB" },
-    in_bearbeitung: { label: "In Bearbeitung", bg: "#FFF3CD", text: "#856404", border: "#FFE69C" },
-    abgelehnt: { label: "Abgelehnt", bg: "#F8D7DA", text: "#842029", border: "#F5C2C7" },
-  }[status];
-
-  return (
-    <span
-      className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border"
-      style={{ backgroundColor: cfg.bg, color: cfg.text, borderColor: cfg.border }}
-    >
-      <span className="mr-1 w-1.5 h-1.5 rounded-full inline-block" style={{ backgroundColor: cfg.text }} />
-      {cfg.label}
-    </span>
-  );
-}
 
 // ─── Navigation ───────────────────────────────────────────────────────────────
 function NavBar({ page, setPage }: { page: Page; setPage: (p: Page) => void }) {
