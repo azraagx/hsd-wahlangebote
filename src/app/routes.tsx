@@ -13,7 +13,7 @@ import StudentPortal from "./pages/StudentPortal";
 export const router = createBrowserRouter([
   { path: "/student", Component: StudentPortal },
   {
-    path: "/",
+    path: "/lehrender",
     Component: Layout,
     children: [
       { index: true, Component: Dashboard },
@@ -24,7 +24,8 @@ export const router = createBrowserRouter([
       { path: "success", Component: Success },
       { path: "published", Component: PublishedList },
       { path: "published/:id", Component: PublishedDetail },
-      { path: "*", Component: () => { window.location.href = "/"; return null; } },
+      { path: "*", Component: () => { window.location.href = "/lehrender"; return null; } },
     ],
   },
+  { path: "/", Component: () => { window.location.href = "/student"; return null; } },
 ]);
