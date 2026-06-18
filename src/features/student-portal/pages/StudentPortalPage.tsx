@@ -30,6 +30,7 @@ import { coursesBySemester } from "@/features/student-portal/data/courses";
 import { schedule, TIME_SLOTS, DAYS } from "@/features/student-portal/data/schedule";
 import { modulAngebote } from "@/features/student-portal/data/moduleOffers";
 import { StatusBadge } from "@/features/student-portal/components/StatusBadge";
+import { StatusBadge } from "@/features/student-portal/components/StatusBadge";
 // ─── Design tokens from import ───────────────────────────────────────────────
 
 
