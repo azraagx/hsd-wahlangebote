@@ -12,16 +12,14 @@ export default function Layout() {
         </Link>
         <div className="flex items-center gap-4">
           <span className="text-sm font-medium text-slate-500">Lehrenden-Portal</span>
-          <a
-            href="https://close-yam-00412525.figma.site"
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            to="/student"
             className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-600 hover:text-red-700 hover:bg-red-50 rounded-md transition-colors border border-red-200"
             title="Wechseln zur Studierenden-Ansicht"
           >
             <ArrowRightLeft className="h-4 w-4" />
             Zur Studierenden-Ansicht
-          </a>
+          </Link>
           <div className="flex items-center justify-center h-8 w-8 rounded-full bg-slate-100 text-slate-600">
             <UserCircle className="h-6 w-6" />
           </div>
