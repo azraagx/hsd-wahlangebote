@@ -32,6 +32,7 @@ import { modulAngebote } from "@/features/student-portal/data/moduleOffers";
 import { StatusBadge } from "@/features/student-portal/components/StatusBadge";
 import { StatusBadge } from "@/features/student-portal/components/StatusBadge";
 import { AlertBanner } from "@/features/student-portal/components/AlertBanner";
+import { CourseCard } from "@/features/student-portal/components/CourseCard";
 // ─── Design tokens from import ───────────────────────────────────────────────
 
 
@@ -269,54 +270,7 @@ function NavBar({ page, setPage }: { page: Page; setPage: (p: Page) => void }) {
 
 
 // ─── Course Card ──────────────────────────────────────────────────────────────
-function CourseCard({ course, onNavigate }: { course: Course; onNavigate?: () => void }) {
-  return (
-    <div
-      className="bg-white rounded-lg overflow-hidden flex flex-col"
-      style={{ border: `1px solid ${HSD_BORDER}`, boxShadow: "0 2px 2px rgba(0,0,0,0.06)" }}
-    >
-      <div className="h-24 flex items-center justify-center" style={{ backgroundColor: course.color }}>
-        <span className="text-white text-2xl font-bold opacity-60">{course.modulNr}</span>
-      </div>
-      <div className="p-4 flex flex-col flex-1">
-        <h3
-          className="text-base font-semibold mb-0.5 leading-snug"
-          style={{ fontFamily: "'Segoe UI', sans-serif", color: HSD_LINK }}
-        >
-          {course.name}
-        </h3>
-        {!course.isPlaceholder && (
-          <p className="text-sm mb-1" style={{ fontFamily: "'Segoe UI', sans-serif", color: HSD_GRAY }}>
-            {course.modulNr} · {course.dozent}
-          </p>
-        )}
-        {course.isPlaceholder && (
-          <p className="text-sm mb-1" style={{ fontFamily: "'Segoe UI', sans-serif", color: HSD_GRAY }}>
-            {course.modulNr}
-          </p>
-        )}
-        <div className="flex items-center gap-1.5 mb-3">
-          <span
-            className="text-xs font-semibold px-2 py-0.5 rounded-full"
-            style={{ backgroundColor: "#e0f4f8", color: HSD_TEAL }}
-          >
-            {course.ects} ECTS
-          </span>
-        </div>
-        <p className="text-sm leading-relaxed flex-1 mb-4" style={{ fontFamily: "'Segoe UI', sans-serif", color: HSD_GRAY }}>
-          {course.beschreibung}
-        </p>
-        <button
-          className="w-full text-sm font-semibold py-2 rounded-lg transition-colors hover:opacity-90"
-          style={{ backgroundColor: HSD_BLUE, color: "white", fontFamily: "'Segoe UI', sans-serif" }}
-          onClick={onNavigate}
-        >
-          {course.isPlaceholder ? "Zur Auswahl" : "Mehr Informationen"}
-        </button>
-      </div>
-    </div>
-  );
-}
+
 
 // ─── Homepage (Startseite) ────────────────────────────────────────────────────
 function HomePage({ setPage }: { setPage: (p: Page) => void }) {
