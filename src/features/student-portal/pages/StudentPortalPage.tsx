@@ -31,6 +31,7 @@ import { schedule, TIME_SLOTS, DAYS } from "@/features/student-portal/data/sched
 import { modulAngebote } from "@/features/student-portal/data/moduleOffers";
 import { StatusBadge } from "@/features/student-portal/components/StatusBadge";
 import { StatusBadge } from "@/features/student-portal/components/StatusBadge";
+import { AlertBanner } from "@/features/student-portal/components/AlertBanner";
 // ─── Design tokens from import ───────────────────────────────────────────────
 
 
@@ -265,32 +266,7 @@ function NavBar({ page, setPage }: { page: Page; setPage: (p: Page) => void }) {
 }
 
 // ─── Alert Banner ─────────────────────────────────────────────────────────────
-function AlertBanner() {
-  return (
-    <div className="rounded-lg mb-5" style={{ backgroundColor: "#cceff7" }}>
-      <div
-        className="bg-white rounded-lg p-5"
-        style={{ border: `1px solid ${HSD_BORDER}`, boxShadow: "0 2px 2px rgba(0,0,0,0.08)", margin: "12px" }}
-      >
-        <p className="font-bold text-base mb-2" style={{ fontFamily: "'Segoe UI', sans-serif", color: HSD_TEAL }}>
-          📣 Neu im Moodle: Das Sendezentrum für Studierende
-        </p>
-        <p className="text-sm leading-relaxed" style={{ fontFamily: "'Segoe UI', sans-serif", color: HSD_GRAY }}>
-          Wichtige Hinweise für Studierende aus HSD-Einrichtungen gebündelt an einem Ort und automatisch im HSD-Postfach.
-          Benachrichtigungen und Foren lassen sich individuell anpassen.
-        </p>
-        <a
-          href="#"
-          className="inline-flex items-center gap-1.5 text-sm mt-3 font-semibold"
-          style={{ color: HSD_LINK, fontFamily: "'Segoe UI', sans-serif", border: `1px solid ${HSD_BLUE}`, padding: "4px 12px", borderRadius: "4px" }}
-          onClick={(e) => e.preventDefault()}
-        >
-          Mehr Infos & Einstellungen ↗
-        </a>
-      </div>
-    </div>
-  );
-}
+
 
 // ─── Course Card ──────────────────────────────────────────────────────────────
 function CourseCard({ course, onNavigate }: { course: Course; onNavigate?: () => void }) {
