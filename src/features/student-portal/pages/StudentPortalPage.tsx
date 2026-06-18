@@ -24,6 +24,11 @@ import {
   HSD_BORDER,
   HSD_BORDER_LIGHT,
 } from "@/features/student-portal/styles/tokens";
+
+import { bewerbungen, assignedCourses } from "@/features/student-portal/data/applications";
+import { coursesBySemester } from "@/features/student-portal/data/courses";
+import { schedule, TIME_SLOTS, DAYS } from "@/features/student-portal/data/schedule";
+import { modulAngebote } from "@/features/student-portal/data/moduleOffers";
 // ─── Design tokens from import ───────────────────────────────────────────────
 
 
@@ -110,201 +115,11 @@ interface StudentApplication {
 }
 
 // ─── Data ────────────────────────────────────────────────────────────────────
-const bewerbungen: Bewerbung[] = [
-  { id: 1, name: "Machine Learning & KI", typ: "Wahlmodul", datum: "12.03.2026", status: "angenommen", modul: "BMI 78" },
-  { id: 2, name: "Vertiefung A – UX & Interaction Design", typ: "Vertiefung A", datum: "05.03.2026", status: "in_bearbeitung", modul: "VT-A" },
-  { id: 3, name: "Entrepreneurship & Innovation", typ: "Wahlmodul", datum: "28.02.2026", status: "abgelehnt", modul: "BMI 81" },
-  { id: 4, name: "Vertiefung B – Software Engineering", typ: "Vertiefung B", datum: "01.04.2026", status: "angenommen", modul: "VT-B" },
-  { id: 5, name: "Datenbanken für Fortgeschrittene", typ: "Wahlmodul", datum: "15.04.2026", status: "in_bearbeitung", modul: "BMI 65" },
-];
 
-const coursesBySemester: Record<number, Course[]> = {
-  1: [
-    { id: 1, name: "Grundlagen der Programmierung", modulNr: "BMI 01", dozent: "Prof. Dr. Müller", ects: 5, beschreibung: "Einführung in imperative und objektorientierte Programmierung mit Java.", color: "#6C5CE7" },
-    { id: 2, name: "Mathematik 1", modulNr: "BMI 02", dozent: "Prof. Dr. Schmidt", ects: 5, beschreibung: "Lineare Algebra, Analysis und diskrete Mathematik für Informatiker.", color: "#00B894" },
-    { id: 3, name: "Einführung in die Medieninformatik", modulNr: "BMI 03", dozent: "Prof. Dr. Weber", ects: 5, beschreibung: "Überblick über das Fachgebiet, Medienformate und digitale Kommunikation.", color: "#0984E3" },
-    { id: 4, name: "Grundlagen der Gestaltung", modulNr: "BMI 04", dozent: "Prof. Dr. Fischer", ects: 5, beschreibung: "Farblehre, Kompositionsprinzipien und visuelle Kommunikation.", color: "#E17055" },
-  ],
-  2: [
-    { id: 1, name: "Algorithmen & Datenstrukturen", modulNr: "BMI 11", dozent: "Prof. Dr. Bauer", ects: 5, beschreibung: "Sortier- und Suchalgorithmen, Graphen, Bäume und Komplexitätsanalyse.", color: "#6C5CE7" },
-    { id: 2, name: "Mathematik 2", modulNr: "BMI 12", dozent: "Prof. Dr. Schmidt", ects: 5, beschreibung: "Stochastik, Wahrscheinlichkeitsrechnung und Statistik.", color: "#00B894" },
-    { id: 3, name: "Webentwicklung Grundlagen", modulNr: "BMI 13", dozent: "Prof. Dr. Hofmann", ects: 5, beschreibung: "HTML, CSS, JavaScript und grundlegende Web-Technologien.", color: "#0984E3" },
-    { id: 4, name: "Datenbankensysteme", modulNr: "BMI 14", dozent: "Prof. Dr. Koch", ects: 5, beschreibung: "Relationale Datenbanken, SQL, ER-Modellierung und Normalisierung.", color: "#FDCB6E" },
-  ],
-  3: [
-    { id: 1, name: "Softwaretechnik", modulNr: "BMI 21", dozent: "Prof. Dr. Lange", ects: 5, beschreibung: "Agile Methoden, Scrum, UML-Modellierung und Software-Qualität.", color: "#6C5CE7" },
-    { id: 2, name: "Medienproduktion", modulNr: "BMI 22", dozent: "Prof. Dr. Braun", ects: 5, beschreibung: "Produktion digitaler Medieninhalte: Video, Audio und Interaktivität.", color: "#E17055" },
-    { id: 3, name: "Human-Computer Interaction", modulNr: "BMI 23", dozent: "Prof. Dr. Schulz", ects: 5, beschreibung: "Grundlagen der Usability und User-Centered Design.", color: "#0984E3" },
-    { id: 4, name: "Netzwerke & Kommunikation", modulNr: "BMI 24", dozent: "Prof. Dr. Zimmermann", ects: 5, beschreibung: "TCP/IP, Protokolle und Grundlagen der Netzsicherheit.", color: "#00B894" },
-  ],
-  4: [
-    { id: 1, name: "Bild und Ton", modulNr: "BMI 52", dozent: "Prof. Dr. Krüger", ects: 5, beschreibung: "Gestaltung und Implementierung interaktiver Anwendungen und Interfaces.", color: "#6C5CE7", category: "Pflichtmodul" },
-    { id: 2, name: "IT-Sicherheit", modulNr: "BMI 26", dozent: "Prof. Dr. Wolff", ects: 5, beschreibung: "Kryptographie, Schwachstellenanalyse und sichere Systemarchitekturen.", color: "#D63031", category: "Pflichtmodul" },
-    { id: 3, name: "Vertiefung A", modulNr: "VT-A", dozent: "", ects: 10, beschreibung: "Wählen Sie aus verschiedenen Angeboten im Bereich UX, Interaction Design und verwandten Themen.", color: "#E17055", isPlaceholder: true, category: "Vertiefung A" },
-    { id: 4, name: "Vertiefung B", modulNr: "VT-B", dozent: "", ects: 10, beschreibung: "Wählen Sie aus verschiedenen Angeboten im Bereich Software Engineering, Web-Technologien und verwandten Themen.", color: "#0984E3", isPlaceholder: true, category: "Vertiefung B" },
-    { id: 5, name: "Medienprojekt A", modulNr: "MP-A", dozent: "", ects: 10, beschreibung: "Wählen Sie aus verschiedenen interdisziplinären Medienprojekten mit Fokus auf Konzeption und praktische Umsetzung.", color: "#FDCB6E", isPlaceholder: true, category: "Medienprojekt A" },
-  ],
-  5: [
-    { id: 1, name: "Machine Learning", modulNr: "BMI 78", dozent: "Prof. Dr. Hansen", ects: 5, beschreibung: "Supervised und Unsupervised Learning, neuronale Netze und Evaluierung.", color: "#6C5CE7" },
-    { id: 2, name: "Mobile App-Entwicklung", modulNr: "BMI 55", dozent: "Prof. Dr. Schneider", ects: 5, beschreibung: "Native und cross-platform Entwicklung für iOS und Android.", color: "#00B894" },
-    { id: 3, name: "Projektseminar", modulNr: "BMI 60", dozent: "Prof. Dr. Kaufmann", ects: 10, beschreibung: "Interdisziplinäres Praxisprojekt in Teams mit externen Partnern.", color: "#FDCB6E" },
-  ],
-  6: [
-    { id: 1, name: "Entrepreneurship & Innovation", modulNr: "BMI 81", dozent: "Prof. Dr. Berger", ects: 5, beschreibung: "Startup-Methoden, Business Model Canvas und Innovations-Management.", color: "#E17055" },
-    { id: 2, name: "Cloud Computing", modulNr: "BMI 79", dozent: "Prof. Dr. Hoffmann", ects: 5, beschreibung: "AWS, Azure und GCP – Infrastruktur, Skalierung und Serverless.", color: "#0984E3" },
-    { id: 3, name: "Bachelorarbeit Vorbereitung", modulNr: "BMI 90", dozent: "Prof. Dr. Werner", ects: 5, beschreibung: "Wissenschaftliches Arbeiten, Expose-Erstellung und Methodenwahl.", color: "#00B894" },
-  ],
-  7: [
-    { id: 1, name: "Bachelorarbeit", modulNr: "BMI 99", dozent: "Individuelle Betreuung", ects: 12, beschreibung: "Eigenständige wissenschaftliche Abschlussarbeit im gewählten Schwerpunkt.", color: "#6C5CE7" },
-    { id: 2, name: "Kolloquium", modulNr: "BMI 100", dozent: "Prüfungsausschuss", ects: 3, beschreibung: "Präsentation und Verteidigung der Bachelorarbeit vor dem Prüfungsausschuss.", color: "#D63031" },
-  ],
-};
 
-const schedule: ScheduleEntry[] = [
-  { day: 0, startSlot: 1, duration: 2, title: "Interaktive Systeme", room: "E.101", color: "#6C5CE7" },
-  { day: 0, startSlot: 4, duration: 2, title: "IT-Sicherheit", room: "B.204", color: "#D63031" },
-  { day: 1, startSlot: 0, duration: 2, title: "Interaktive Systeme", room: "D.301", color: "#E17055" },
-  { day: 1, startSlot: 3, duration: 2, title: "Mobile Anwendungen", room: "A.102", color: "#0984E3" },
-  { day: 2, startSlot: 1, duration: 3, title: "Projektseminar", room: "Lab 3", color: "#FDCB6E" },
-  { day: 3, startSlot: 0, duration: 2, title: "IT-Sicherheit Übung", room: "B.204", color: "#D63031" },
-  { day: 3, startSlot: 3, duration: 2, title: "Interaktive Systeme Lab", room: "Media Lab", color: "#6C5CE7" },
-  { day: 4, startSlot: 2, duration: 2, title: "myHSD Projekt", room: "D.301", color: "#E17055" },
-];
-
-const modulAngebote: ModulAngebot[] = [
-  {
-    id: 1,
-    titel: "Interdisziplinäres Projekt: Konzeption – Prototyping – Umsetzung der Produktvision",
-    professoren: ["Prof. Gabriele Schade-Trapp", "Dr. Christina Kanalakis", "Michael Ignatieff"],
-    beschreibung: "Warum ist gerne ein Projekt, das an Möglichkeit a?",
-    kategorie: "TRADY, MTCADY, M3DT, DAISY, MDPR",
-    detailBeschreibung: "In diesem interdisziplinären Projekt entwickeln Sie in einem Team ein Produkt von der ersten Idee bis zum funktionierenden Prototyp. Sie lernen dabei Konzepte wie Design Thinking, agile Entwicklungsmethoden und selbstständiges Arbeiten.",
-    anforderungen: "Eigenverantwortung, Teamfähigkeit, grundlegende Programmierkenntnisse",
-    platze: 24,
-    semester: "Sommersemester 2026",
-    modulTyp: "Medienprojekt A",
-    modulCategory: "Medienprojekt A",
-    status: "Open",
-    deadline: "08.04.2026, 08:00 Uhr",
-    inhalteZiele: [
-      "Design Thinking und agile Entwicklungsmethoden kennenlernen",
-      "Von der Produktidee zum funktionsfähigen Prototyp",
-      "Teamarbeit in interdisziplinären Projekten",
-      "Selbstständige Projekt- und Zeitplanung",
-      "Präsentation und Dokumentation von Projektergebnissen"
-    ],
-    organisation: {
-      rhythm: "Wöchentliche Projektmeetings, 4 SWS",
-      workload: "ca. 150 Stunden pro Semester",
-      projectType: "Teamarbeit (4-5 Studierende)",
-      language: "Deutsch / Englisch nach Absprache",
-      format: "Präsenz + Remote nach Vereinbarung",
-      availability: "Sommersemester 2026"
-    },
-    anwesenheitspflicht: {
-      required: true,
-      description: "Anwesenheitspflicht: Ja – regelmäßige Teilnahme an Projektmeetings und Präsentationen erforderlich. Mindestens 80% Anwesenheit bei Präsenzterminen."
-    },
-    bewerbungsinfo: {
-      type: "Priorisiertes Bewerbungsverfahren",
-      motivationLetter: true,
-      selectionProcess: "Vergabe nach Priorität und verfügbaren Plätzen",
-      multipleApplications: true,
-      reusable: false
-    }
-  },
-  {
-    id: 2,
-    titel: "Projekt(rahmen): Konzept für die praxisorientierte Umsetzung den Medienbereiches",
-    professoren: ["Prof. Dr. rer. nat. Michael Marmann", "Dipl.-Ing. Marc Hofmann"],
-    beschreibung: "Projektion für Ihre Projektierung",
-    kategorie: "TRADY, MTDA29Y, MDPR",
-    detailBeschreibung: "Entwicklung innovativer Medienkonzepte mit Fokus auf praktische Umsetzbarkeit. Das Projekt verbindet theoretische Grundlagen mit hands-on Erfahrung in der Medienproduktion.",
-    anforderungen: "Interesse an Medienproduktion, Grundkenntnisse in Videoschnitt oder Grafikdesign",
-    platze: 20,
-    semester: "Sommersemester 2026",
-    modulTyp: "Medienprojekt B",
-    modulCategory: "Medienprojekt B",
-    status: "Few spots left",
-    deadline: "08.04.2026, 08:00 Uhr",
-    inhalteZiele: [
-      "Konzeption und Planung von Medienprojekten",
-      "Praktische Medienproduktion (Video, Audio, Print)",
-      "Projektmanagement im Medienbereich",
-      "Zielgruppenanalyse und Content-Strategie"
-    ],
-    organisation: {
-      rhythm: "Wöchentliche Projektsitzungen, 4 SWS",
-      workload: "ca. 150 Stunden pro Semester",
-      projectType: "Teamarbeit (3-4 Studierende)",
-      language: "Deutsch",
-      format: "Präsenz (Medien-Labor)",
-      availability: "Sommersemester 2026"
-    },
-    anwesenheitspflicht: {
-      required: true,
-      description: "Anwesenheitspflicht: Ja – regelmäßige Teilnahme an Projektmeetings und Zwischen­präsentationen erforderlich."
-    },
-    bewerbungsinfo: {
-      type: "Priorisiertes Bewerbungsverfahren",
-      motivationLetter: true,
-      selectionProcess: "Vergabe nach Priorität und verfügbaren Plätzen",
-      multipleApplications: true,
-      reusable: false
-    }
-  },
-  {
-    id: 3,
-    titel: "Projekt(rahmen): Mobile",
-    professoren: ["Prof. Dr.-Ing. Christian Noss"],
-    beschreibung: "Mobile-first Entwicklung moderner Anwendungen",
-    kategorie: "TRADY, MTCADY",
-    detailBeschreibung: "In diesem Projekt konzentrieren wir uns auf die Entwicklung von Mobile-First Anwendungen. Sie lernen die Besonderheiten mobiler Plattformen kennen und entwickeln eine eigene App.",
-    anforderungen: "Programmierkenntnisse, Interesse an Mobile Development",
-    platze: 18,
-    semester: "Sommersemester 2026",
-    modulTyp: "Vertiefung A",
-    modulCategory: "Vertiefung A",
-    status: "Open",
-    deadline: "08.04.2026, 08:00 Uhr",
-    inhalteZiele: [
-      "Mobile-First Design Prinzipien",
-      "Native und Cross-Platform Entwicklung",
-      "Mobile User Experience Design",
-      "Performance-Optimierung für mobile Geräte",
-      "App-Publishing und Distribution"
-    ],
-    organisation: {
-      rhythm: "Wöchentlich, 4 SWS",
-      workload: "ca. 300 Stunden pro Semester",
-      projectType: "Einzelarbeit oder Zweierteams",
-      language: "Deutsch",
-      format: "Hybrid (Präsenz + Online)",
-      availability: "Sommersemester 2026"
-    },
-    bewerbungsinfo: {
-      type: "Priorisiertes Bewerbungsverfahren",
-      motivationLetter: false,
-      selectionProcess: "Vergabe nach Priorität und verfügbaren Plätzen",
-      multipleApplications: true,
-      reusable: true
-    }
-  }
-];
-
-const TIME_SLOTS = ["08:00", "09:30", "11:00", "12:30", "14:00", "15:30", "17:00", "18:30"];
-const DAYS = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag"];
 
 const DND_TYPE = "APPLICATION_CARD";
 
-// Real assigned courses for "Meine Kurse" - these are what students actually got after the Wahlverfahren
-const assignedCourses = [
-  { id: 1, title: "BMI 52: Interaktive Systeme SoSe 2026", category: "Vertiefung A", sem: "4. Semester", img: imgCourse },
-  { id: 2, title: "IT-Sicherheit", category: "Pflichtmodul", sem: "4. Semester", color: "#D63031" },
-  { id: 3, title: "Web Engineering", category: "Vertiefung A", sem: "4. Semester", color: "#E17055" },
-  { id: 4, title: "Web Engineering Projekt", category: "Vertiefung B", sem: "4. Semester", color: "#0984E3" },
-  { id: 5, title: "Digitale Medienproduktion", category: "Medienprojekt A", sem: "4. Semester", color: "#FDCB6E" },
-];
 
 // ─── Status Badge ─────────────────────────────────────────────────────────────
 function StatusBadge({ status }: { status: StatusType }) {
@@ -563,8 +378,8 @@ function HomePage({ setPage }: { setPage: (p: Page) => void }) {
       description: "Technik und Medien vereint. Von der Audiotechnik bis zur Videoproduktion.",
       color: "#E17055",
       buttons: [
-        { label: "PO 2018", action: () => {} },
-        { label: "PO 2025", action: () => {} }
+        { label: "PO 2018", action: () => { } },
+        { label: "PO 2025", action: () => { } }
       ]
     },
     {
@@ -573,8 +388,8 @@ function HomePage({ setPage }: { setPage: (p: Page) => void }) {
       description: "Vertiefen Sie Ihr Wissen in Human-Computer Interaction, Data Science oder Software Engineering.",
       color: "#6C5CE7",
       buttons: [
-        { label: "PO 2018", action: () => {} },
-        { label: "PO 2025", action: () => {} }
+        { label: "PO 2018", action: () => { } },
+        { label: "PO 2025", action: () => { } }
       ]
     },
     {
