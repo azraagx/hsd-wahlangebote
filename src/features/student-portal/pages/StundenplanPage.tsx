@@ -7,8 +7,8 @@ import {
   HSD_BORDER_LIGHT,
   HSD_DARK,
   HSD_GRAY,
+  HSD_LINK,
 } from "@/features/student-portal/styles/tokens";
-
 export function StundenplanPage({ setPage }: { setPage: (p: Page) => void }) {
   const SLOT_H = 64;
 

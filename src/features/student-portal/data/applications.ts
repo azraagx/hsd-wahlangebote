@@ -1,3 +1,4 @@
+import imgCourse from "@/imports/1440WDefault/344178e81f62bc421593dc0e4202a66e0f23556b.png";
 import type { Bewerbung } from "@/features/student-portal/types";
 export const bewerbungen: Bewerbung[] = [
   { id: 1, name: "Machine Learning & KI", typ: "Wahlmodul", datum: "12.03.2026", status: "angenommen", modul: "BMI 78" },

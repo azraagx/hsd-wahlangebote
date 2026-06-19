@@ -1,11 +1,12 @@
 import type { Page } from "@/features/student-portal/types";
-import { coursesBySemester } from "@/features/student-portal/data/courses";
 import {
   HSD_BLUE,
   HSD_BORDER,
+  HSD_BORDER_LIGHT,
   HSD_DARK,
   HSD_GRAY,
   HSD_LINK,
+  HSD_RED,
 } from "@/features/student-portal/styles/tokens";
 
 export function StudienverlaufsplanPage({ setPage, navigateWithScroll }: { setPage: (p: Page) => void; navigateWithScroll?: (page: Page, section?: string) => void }) {

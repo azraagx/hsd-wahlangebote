@@ -1,11 +1,11 @@
 import type { Page } from "@/features/student-portal/types";
-import { CourseCard } from "@/features/student-portal/components/CourseCard";
 import { MeinBereichSubNav } from "@/features/student-portal/components/MeinBereichSubNav";
-import { coursesBySemester } from "@/features/student-portal/data/courses";
+import { assignedCourses } from "@/features/student-portal/data/applications";
 import {
   HSD_BORDER,
   HSD_DARK,
   HSD_GRAY,
+  HSD_LINK,
 } from "@/features/student-portal/styles/tokens";
 
 export function MeineKursePage({ setPage }: { setPage: (p: Page) => void }) {

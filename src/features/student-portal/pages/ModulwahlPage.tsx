@@ -1,4 +1,6 @@
-import type { ModulAngebot, ModulCategory, Page } from "@/features/student-portal/types";
+import { useCallback, useState } from "react";
+import type { ModulAngebot, ModulCategory, Page, StudentApplication } from "@/features/student-portal/types";
+import { DraggableApplicationCard } from "@/features/student-portal/components/DraggableApplicationCard";
 import { modulAngebote } from "@/features/student-portal/data/moduleOffers";
 import {
   HSD_BLUE,
@@ -8,6 +10,7 @@ import {
   HSD_GRAY,
   HSD_LINK,
   HSD_RED,
+  HSD_TEAL,
 } from "@/features/student-portal/styles/tokens";
 
 export function ModulwahlPage({ onSelectAngebot, setPage, navigateWithScroll, selectedCategory }: { onSelectAngebot?: (angebot: ModulAngebot) => void; setPage?: (p: Page) => void; navigateWithScroll?: (page: Page, section?: string) => void; selectedCategory?: ModulCategory | null }) {

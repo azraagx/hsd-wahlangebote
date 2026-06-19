@@ -1,8 +1,9 @@
+import { useCallback } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import type { StudentApplication } from "@/features/student-portal/types";
 import {
   HSD_BLUE,
-  HSD_BORDER,
+  HSD_BORDER_LIGHT,
   HSD_DARK,
   HSD_GRAY,
   HSD_RED,

@@ -1,4 +1,6 @@
+import { useState } from "react";
 import type { Page } from "@/features/student-portal/types";
+import { CourseCard } from "@/features/student-portal/components/CourseCard";
 import { coursesBySemester } from "@/features/student-portal/data/courses";
 import {
   HSD_BLUE,
@@ -7,7 +9,6 @@ import {
   HSD_DARK,
   HSD_GRAY,
   HSD_LINK,
-  HSD_RED,
 } from "@/features/student-portal/styles/tokens";
 
 export function BMI2018Page({ setPage }: { setPage: (p: Page) => void }) {

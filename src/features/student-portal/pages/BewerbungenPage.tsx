@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 import type { ModulCategory, Page, StudentApplication } from "@/features/student-portal/types";
 import { DraggableApplicationCard } from "@/features/student-portal/components/DraggableApplicationCard";
 import { MeinBereichSubNav } from "@/features/student-portal/components/MeinBereichSubNav";
+import { StatusBadge } from "@/features/student-portal/components/StatusBadge";
 import { bewerbungen } from "@/features/student-portal/data/applications";
+import { coursesBySemester } from "@/features/student-portal/data/courses";
 import {
   HSD_BLUE,
   HSD_BORDER,
@@ -11,6 +13,7 @@ import {
   HSD_GRAY,
   HSD_LINK,
   HSD_RED,
+  HSD_TEAL,
 } from "@/features/student-portal/styles/tokens";
 
 export function BewerbungenPage({ setPage, scrollTarget, clearScrollTarget, onSelectCategory }: { setPage: (p: Page) => void; scrollTarget: string | null; clearScrollTarget: () => void; onSelectCategory?: (category: ModulCategory) => void }) {

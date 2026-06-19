@@ -1,7 +1,9 @@
+import { useState } from "react";
+import imgProfile from "@/imports/1440WDefault/acc4291260e1f05f1a14cc0893d23296c2967e5d.png";
 import type { Page } from "@/features/student-portal/types";
 import {
   HSD_BLUE,
-  HSD_BORDER,
+  HSD_BORDER_LIGHT,
   HSD_DARK,
   HSD_GRAY,
   HSD_LINK,

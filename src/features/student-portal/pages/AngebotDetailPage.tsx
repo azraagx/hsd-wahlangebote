@@ -7,8 +7,8 @@ import {
   HSD_GRAY,
   HSD_LINK,
   HSD_RED,
+  HSD_TEAL,
 } from "@/features/student-portal/styles/tokens";
-
 export function AngebotDetailPage({ angebot, setPage, onApply }: { angebot: ModulAngebot; setPage: (p: Page) => void; onApply: () => void }) {
   const statusColors = {
     "Open": { bg: "#D4EDDA", text: "#155724" },
