@@ -11,7 +11,7 @@ import PublishedDetail from "./pages/PublishedDetail";
 import StudentPortalPage from "@/features/student-portal/pages/StudentPortalPage";
 
 export const router = createBrowserRouter([
-  { path: "/student", Component: StudentPortal },
+  { path: "/student", Component: StudentPortalPage },
   {
     path: "/lehrender",
     Component: Layout,
