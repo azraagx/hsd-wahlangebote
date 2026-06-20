@@ -3,6 +3,7 @@ import type { ModulCategory, Page, StudentApplication } from "@/features/student
 import { DraggableApplicationCard } from "@/features/student-portal/components/DraggableApplicationCard";
 import { MeinBereichSubNav } from "@/features/student-portal/components/MeinBereichSubNav";
 import { StatusBadge } from "@/features/student-portal/components/StatusBadge";
+import { CourseCard } from "@/features/student-portal/components/CourseCard";
 import { bewerbungen } from "@/features/student-portal/data/applications";
 import { coursesBySemester } from "@/features/student-portal/data/courses";
 import {
