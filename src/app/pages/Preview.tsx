@@ -25,7 +25,7 @@ export default function Preview() {
   return (
     <div className="mx-auto max-w-5xl pb-20">
       <div className="mb-8">
-        <Button variant="ghost" onClick={() => navigate(offerType === 'project' ? "/create-project" : "/import-specialization")} className="-ml-4 mb-4" style={{ color: '#00718b' }}>
+        <Button variant="ghost" onClick={() => navigate(offerType === 'project' ? "create-project" : "import-specialization")} className="-ml-4 mb-4" style={{ color: '#00718b' }}>
           &larr; Zurück zur Bearbeitung
         </Button>
         <h1 style={{ fontFamily: "'Segoe UI Light', 'Segoe UI', sans-serif", fontWeight: 300, color: '#e3000f', fontSize: '32px' }}>Studierenden-Vorschau</h1>
@@ -192,10 +192,10 @@ export default function Preview() {
 
       {/* Action Buttons */}
       <div className="flex flex-col sm:flex-row gap-4 justify-between pt-8 mt-8 border-t">
-        <Button variant="outline" onClick={() => navigate(offerType === 'project' ? "/create-project" : "/import-specialization")}>
+        <Button variant="outline" onClick={() => navigate(offerType === 'project' ? "create-project" : "import-specialization")}>
           Zurück zur Bearbeitung
         </Button>
-        <Button size="lg" className="bg-red-600 hover:bg-red-700 text-white" onClick={() => navigate("/success")}>
+        <Button size="lg" className="bg-red-600 hover:bg-red-700 text-white" onClick={() => navigate("success")}>
           Angebot Veröffentlichen
         </Button>
       </div>

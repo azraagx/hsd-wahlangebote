@@ -16,7 +16,7 @@ export default function ProjectForm() {
   const savedProjects = useMemo(() => getSavedItems().filter(i => i.itemType === 'project'), [getSavedItems]);
 
   const handleNext = () => {
-    navigate("/preview");
+    navigate("preview");
   };
 
   const selectedProjectTypes: string[] = Array.isArray(projectData.type) ? projectData.type : [projectData.type];
@@ -75,7 +75,7 @@ export default function ProjectForm() {
       <div className="mb-8 flex flex-col md:flex-row md:items-start justify-between gap-4">
         <div>
           <button
-            onClick={() => navigate("/select-type")}
+            onClick={() => navigate("select-type")}
             className="-ml-4 mb-4 px-3 py-2 hover:bg-gray-100 rounded transition-colors"
             style={{ color: '#00718b', fontSize: '14px' }}
           >
@@ -89,7 +89,7 @@ export default function ProjectForm() {
           </p>
         </div>
         <button
-          onClick={() => navigate("/preview")}
+          onClick={() => navigate("preview")}
           className="shrink-0 flex items-center gap-2 px-4 py-2 rounded-md border hover:bg-gray-50 transition-colors"
           style={{ borderColor: '#00afd7', color: '#00afd7', fontSize: '14px' }}
         >

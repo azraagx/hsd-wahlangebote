@@ -21,7 +21,7 @@ export default function PublishedDetail() {
     return (
       <div className="mx-auto max-w-5xl pb-20">
         <button
-          onClick={() => navigate("/published")}
+          onClick={() => navigate("published")}
           className="-ml-4 mb-4 px-3 py-2 hover:bg-gray-100 rounded transition-colors"
           style={{ color: '#00718b', fontSize: '14px' }}
         >
@@ -53,10 +53,10 @@ export default function PublishedDetail() {
     if (isProject) {
       loadProject(item.id);
       setOfferType('project');
-      navigate('/create-project?edit=true');
+      navigate('create-project?edit=true');
     } else {
       setOfferType('specialization');
-      navigate('/import-specialization?edit=true');
+      navigate('import-specialization?edit=true');
     }
   };
 
@@ -65,7 +65,7 @@ export default function PublishedDetail() {
       <div className="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
         <div className="w-full sm:w-auto">
           <button
-            onClick={() => navigate("/published")}
+            onClick={() => navigate("published")}
             className="-ml-4 mb-4 px-3 py-2 hover:bg-gray-100 rounded transition-colors"
             style={{ color: '#00718b', fontSize: '14px' }}
           >
@@ -240,7 +240,7 @@ export default function PublishedDetail() {
         <button
           className="flex items-center gap-2 px-6 py-3 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors"
           style={{ color: '#1d2125', fontSize: '14px' }}
-          onClick={() => navigate("/preview")}
+          onClick={() => navigate("preview")}
         >
           <Eye className="h-4 w-4" /> Studierenden-Vorschau ansehen
         </button>

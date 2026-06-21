@@ -11,16 +11,16 @@ export default function TypeSelect() {
 
   const handleNext = () => {
     if (offerType === "project") {
-      navigate(projectMode === "existing" ? "/create-project?mode=existing" : "/create-project");
+      navigate(projectMode === "existing" ? "create-project?mode=existing" : "create-project");
     }
-    if (offerType === "specialization") navigate("/import-specialization");
+    if (offerType === "specialization") navigate("import-specialization");
   };
 
   return (
     <div className="mx-auto max-w-4xl">
       <div className="mb-8">
         <button
-          onClick={() => navigate("/")}
+          onClick={() => navigate("..")}
           className="-ml-4 mb-4 px-3 py-2 hover:bg-gray-100 rounded transition-colors"
           style={{ color: '#00718b', fontSize: '14px' }}
         >
