@@ -16,7 +16,7 @@ export default function PublishedList() {
     <div className="mx-auto max-w-5xl pb-20">
       <div className="mb-8">
         <button
-          onClick={() => navigate("/")}
+          onClick={() => navigate("..")}
           className="-ml-4 mb-4 px-3 py-2 hover:bg-gray-100 rounded transition-colors"
           style={{ color: '#00718b', fontSize: '14px' }}
         >
@@ -42,7 +42,7 @@ export default function PublishedList() {
             <div
               key={item.id}
               className="bg-white rounded-lg border border-[rgba(0,0,0,0.13)] shadow-[0px_2px_2px_rgba(0,0,0,0.08)] hover:shadow-[0px_4px_8px_rgba(0,0,0,0.12)] transition-all cursor-pointer group"
-              onClick={() => navigate(`/published/${item.id}`)}
+              onClick={() => navigate(`published/${item.id}`)}
             >
               <div className="p-6 flex flex-col sm:flex-row gap-6 items-start sm:items-center justify-between">
                 <div className="space-y-2 flex-1">

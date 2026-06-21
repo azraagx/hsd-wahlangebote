@@ -34,12 +34,12 @@ export default function Success() {
 
   const handleCreateAnother = () => {
     resetFlow();
-    navigate("/select-type");
+    navigate("select-type");
   };
 
   const handleDashboard = () => {
     resetFlow();
-    navigate("/");
+    navigate("..");
   };
 
   return (
@@ -95,7 +95,7 @@ export default function Success() {
               <LayoutDashboard className="h-4 w-4" /> Zur Übersicht
             </button>
             <button
-              onClick={() => navigate(lastSavedItemId ? `/published/${lastSavedItemId}` : "/published")}
+              onClick={() => navigate(lastSavedItemId ? `published/${lastSavedItemId}` : "published")}
               className="flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors"
               style={{ color: '#1d2125', fontSize: '14px' }}
             >
