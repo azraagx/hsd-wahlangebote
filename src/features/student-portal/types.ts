@@ -29,6 +29,12 @@ export interface Bewerbung {
   modul: string;
 }
 
+export type CourseActionType = "openoffers" | "openCourse";
+
+export interface CourseAction {
+  type: CourseActionType;
+  label: String;
+}
 export interface Course {
   id: number;
   name: string;
