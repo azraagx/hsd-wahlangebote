@@ -1,13 +1,13 @@
 import { createBrowserRouter } from "react-router";
-import Layout from "./components/Layout";
-import Dashboard from "./pages/Dashboard";
-import TypeSelect from "./pages/TypeSelect";
-import ProjectForm from "./pages/ProjectForm";
-import SpecializationForm from "./pages/SpecializationForm";
-import Preview from "./pages/Preview";
-import Success from "./pages/Success";
-import PublishedList from "./pages/PublishedList";
-import PublishedDetail from "./pages/PublishedDetail";
+import Layout from "@/features/teacher-portal/components/Layout";
+import Dashboard from "@/features/teacher-portal/pages/Dashboard";
+import TypeSelect from "@/features/teacher-portal/pages/TypeSelect";
+import ProjectForm from "@/features/teacher-portal/pages/ProjectForm";
+import SpecializationForm from "@/features/teacher-portal/pages/SpecializationForm";
+import Preview from "@/features/teacher-portal/pages/Preview";
+import Success from "@/features/teacher-portal/pages/Success";
+import PublishedList from "@/features/teacher-portal/pages/PublishedList";
+import PublishedDetail from "@/features/teacher-portal/pages/PublishedDetail";
 import StudentPortalPage from "@/features/student-portal/pages/StudentPortalPage";
 
 export const router = createBrowserRouter([

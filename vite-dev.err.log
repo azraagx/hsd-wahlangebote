@@ -1,0 +1,47 @@
+[2m14:07:15[22m [33m[1m[vite][22m[39m [33m[2m(client)[22m[39m [33mwarning: [33mDuplicate key "border-red-200 bg-red-50 text-red-900 [&>svg]:text-red-600" in object literal[33m
+180|            "border-amber-200 bg-amber-50 text-amber-900 [&>svg]:text-amber-600": variant === 'warning',
+181|            "border-emerald-200 bg-emerald-50 text-emerald-900 [&>svg]:text-emerald-600": variant === 'success',
+182|            "border-red-200 bg-red-50 text-red-900 [&>svg]:text-red-600": variant === 'error'
+   |            ^
+183|          },
+184|          className
+[39m
+  Plugin: [35mvite:esbuild[39m
+  File: [36mC:/Users/finnb/Programmieren/wahlangebote/hsd-wahlangebote/src/app/components/ui.tsx[39m
+[2m15:19:51[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Failed to load url /src/app/components/Layout.tsx (resolved id: C:/Users/finnb/Programmieren/wahlangebote/hsd-wahlangebote/src/app/components/Layout.tsx) in C:/Users/finnb/Programmieren/wahlangebote/hsd-wahlangebote/src/app/routes.tsx. Does the file exist?
+[2m15:19:51[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Failed to load url /src/app/pages/Dashboard.tsx (resolved id: C:/Users/finnb/Programmieren/wahlangebote/hsd-wahlangebote/src/app/pages/Dashboard.tsx) in C:/Users/finnb/Programmieren/wahlangebote/hsd-wahlangebote/src/app/routes.tsx. Does the file exist?
+[2m15:19:51[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Failed to load url /src/app/pages/SpecializationForm.tsx (resolved id: C:/Users/finnb/Programmieren/wahlangebote/hsd-wahlangebote/src/app/pages/SpecializationForm.tsx) in C:/Users/finnb/Programmieren/wahlangebote/hsd-wahlangebote/src/app/routes.tsx. Does the file exist?
+[2m15:19:51[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Failed to load url /src/app/pages/Success.tsx (resolved id: C:/Users/finnb/Programmieren/wahlangebote/hsd-wahlangebote/src/app/pages/Success.tsx) in C:/Users/finnb/Programmieren/wahlangebote/hsd-wahlangebote/src/app/routes.tsx. Does the file exist?
+[2m15:19:51[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Failed to load url /src/app/pages/TypeSelect.tsx (resolved id: C:/Users/finnb/Programmieren/wahlangebote/hsd-wahlangebote/src/app/pages/TypeSelect.tsx) in C:/Users/finnb/Programmieren/wahlangebote/hsd-wahlangebote/src/app/routes.tsx. Does the file exist?
+[2m15:19:51[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Failed to load url /src/app/pages/Preview.tsx (resolved id: C:/Users/finnb/Programmieren/wahlangebote/hsd-wahlangebote/src/app/pages/Preview.tsx) in C:/Users/finnb/Programmieren/wahlangebote/hsd-wahlangebote/src/app/routes.tsx. Does the file exist?
+[2m15:19:51[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Failed to load url /src/app/pages/ProjectForm.tsx (resolved id: C:/Users/finnb/Programmieren/wahlangebote/hsd-wahlangebote/src/app/pages/ProjectForm.tsx) in C:/Users/finnb/Programmieren/wahlangebote/hsd-wahlangebote/src/app/routes.tsx. Does the file exist?
+[2m15:19:51[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Failed to load url /src/app/pages/PublishedList.tsx (resolved id: C:/Users/finnb/Programmieren/wahlangebote/hsd-wahlangebote/src/app/pages/PublishedList.tsx) in C:/Users/finnb/Programmieren/wahlangebote/hsd-wahlangebote/src/app/routes.tsx. Does the file exist?
+[2m15:19:51[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Failed to load url /src/app/pages/PublishedDetail.tsx (resolved id: C:/Users/finnb/Programmieren/wahlangebote/hsd-wahlangebote/src/app/pages/PublishedDetail.tsx) in C:/Users/finnb/Programmieren/wahlangebote/hsd-wahlangebote/src/app/routes.tsx. Does the file exist?
+[2m15:19:52[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Failed to resolve import "../components/ui" from "src/features/teacher-portal/pages/Preview.tsx". Does the file exist?
+  Plugin: [35mvite:import-analysis[39m
+  File: [36mC:/Users/finnb/Programmieren/wahlangebote/hsd-wahlangebote/src/features/teacher-portal/pages/Preview.tsx[39m:3:23
+[33m  18 |  import { useNavigate } from "react-router";
+  19 |  import { AlertCircle } from "lucide-react";
+  20 |  import { Button } from "../components/ui";
+     |                          ^
+  21 |  import { useFormState } from "../context/FormContext";
+  22 |  export default function Preview() {[39m
+[2m15:19:52[22m [31m[1m[vite][22m[39m [31mInternal server error: Failed to resolve import "../components/ui" from "src/features/teacher-portal/pages/Preview.tsx". Does the file exist?[39m
+  Plugin: [35mvite:import-analysis[39m
+  File: [36mC:/Users/finnb/Programmieren/wahlangebote/hsd-wahlangebote/src/features/teacher-portal/pages/Preview.tsx[39m:3:23
+[33m  18 |  import { useNavigate } from "react-router";
+  19 |  import { AlertCircle } from "lucide-react";
+  20 |  import { Button } from "../components/ui";
+     |                          ^
+  21 |  import { useFormState } from "../context/FormContext";
+  22 |  export default function Preview() {[39m
+      at TransformPluginContext._formatLog (file:///C:/Users/finnb/Programmieren/wahlangebote/hsd-wahlangebote/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42658:41)
+      at TransformPluginContext.error (file:///C:/Users/finnb/Programmieren/wahlangebote/hsd-wahlangebote/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42655:16)
+      at normalizeUrl (file:///C:/Users/finnb/Programmieren/wahlangebote/hsd-wahlangebote/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:40634:23)
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+      at async file:///C:/Users/finnb/Programmieren/wahlangebote/hsd-wahlangebote/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:40753:37
+      at async Promise.all (index 5)
+      at async TransformPluginContext.transform (file:///C:/Users/finnb/Programmieren/wahlangebote/hsd-wahlangebote/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:40680:7)
+      at async EnvironmentPluginContainer.transform (file:///C:/Users/finnb/Programmieren/wahlangebote/hsd-wahlangebote/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42453:18)
+      at async loadAndTransform (file:///C:/Users/finnb/Programmieren/wahlangebote/hsd-wahlangebote/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:35845:27)
+      at async viteTransformMiddleware (file:///C:/Users/finnb/Programmieren/wahlangebote/hsd-wahlangebote/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:37369:24)

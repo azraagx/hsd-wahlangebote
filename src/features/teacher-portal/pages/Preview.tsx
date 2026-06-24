@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router";
 import { User, Users, MapPin, Calendar, Clock, AlertCircle, Send } from "lucide-react";
-import { Button } from "../components/ui";
+import { Button } from "@/app/components/ui";
 import { useFormState } from "../context/FormContext";
 
 export default function Preview() {
