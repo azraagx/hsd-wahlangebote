@@ -3,10 +3,10 @@ import { HSD_BORDER, HSD_DARK, HSD_GRAY, HSD_LINK } from "@/features/student-por
 
 interface CourseCardProps {
   course: Course;
-  onNavigate?: () => void;
+  onAction?: (course: Course) => void;
 }
 
-export function CourseCard({ course, onNavigate }: CourseCardProps) {
+export function CourseCard({ course, onAction }: CourseCardProps) {
   return (
     <div
       className="rounded-lg border bg-white p-4"
@@ -35,13 +35,14 @@ export function CourseCard({ course, onNavigate }: CourseCardProps) {
         {course.dozent}
       </p>
 
-      {course.isPlaceholder && onNavigate && (
+      {course.action && onAction && (
         <button
-          onClick={onNavigate}
+          type="button"
+          onClick={()=> onAction(course)}
           className="text-sm font-semibold hover:underline"
           style={{ color: HSD_LINK }}
         >
-          Angebote ansehen
+          {course.action.label}
         </button>
       )}
     </div>

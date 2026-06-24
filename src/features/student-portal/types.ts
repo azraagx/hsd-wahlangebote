@@ -11,12 +11,16 @@ export type Page =
 export type ModulCategory =
   | "Vertiefung A"
   | "Vertiefung B"
+  | "Vertiefung c"
+  | "Vertiefung D"
   | "Medienprojekt A"
   | "Medienprojekt B"
   | "Informatikprojekt 1"
   | "Informatikprojekt 2"
   | "Pflichtmodul"
-  | "Wahlmodul";
+  | "Wahlmodul"
+  | "Wissenschaftliche Vertiefung"
+  | "Individuelle Vertiefung";
 
 export type StatusType = "angenommen" | "in_bearbeitung" | "abgelehnt";
 
@@ -29,6 +33,12 @@ export interface Bewerbung {
   modul: string;
 }
 
+export type CourseActionType = "openoffers" | "openCourse";
+
+export interface CourseAction {
+  type: CourseActionType;
+  label: String;
+}
 export interface Course {
   id: number;
   name: string;

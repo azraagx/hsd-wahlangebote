@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { ModulCategory, Page, StudentApplication } from "@/features/student-portal/types";
+import type { Course, ModulCategory, Page, StudentApplication } from "@/features/student-portal/types";
 import { DraggableApplicationCard } from "@/features/student-portal/components/DraggableApplicationCard";
 import { MeinBereichSubNav } from "@/features/student-portal/components/MeinBereichSubNav";
 import { StatusBadge } from "@/features/student-portal/components/StatusBadge";
@@ -25,6 +25,17 @@ export function BewerbungenPage({ setPage, scrollTarget, clearScrollTarget, onSe
   const filteredBewerbungen = categoryFilter === "Alle"
     ? bewerbungen
     : bewerbungen.filter(b => b.typ === categoryFilter || b.modul.includes(categoryFilter));
+
+    const handleCourseAction = (course: Course) => {
+    if (course.action?.type === "openOffers" && course.category && onSelectCategory) {
+      onSelectCategory(course.category);
+      return;
+    }
+
+    if (course.action?.type === "openCourse") {
+      alert(`Kurs öffnen: ${course.name}`);
+    }
+  };
 
   useEffect(() => {
     if (scrollTarget) {
@@ -231,10 +242,7 @@ export function BewerbungenPage({ setPage, scrollTarget, clearScrollTarget, onSe
               <CourseCard
                 key={course.id}
                 course={course}
-                onNavigate={course.isPlaceholder && course.category && onSelectCategory
-                  ? () => onSelectCategory(course.category as ModulCategory)
-                  : undefined
-                }
+                onAction={handleCourseAction}
               />
             ))}
           </div>
