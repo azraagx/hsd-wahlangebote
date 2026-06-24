@@ -8,8 +8,7 @@ import {
 
 export function MeinBereichSubNav({ page, setPage }: { page: Page; setPage: (p: Page) => void }) {
   return (
-    <div className="flex items-center gap-1 mb-6 border-b overflow-x-auto" style={{ borderColor: HSD_BORDER_LIGHT }}>
-      {([
+<div className="flex flex-wrap items-center gap-1 mb-6 border-b" style={{ borderColor: HSD_BORDER_LIGHT }}>      {([
         { key: "modulwahlUebersicht", label: "Modulwahl", icon: "🧭" },
         { key: "bewerbungen", label: "Meine Bewerbungen", icon: "📋" },
         { key: "kurse", label: "Meine Kurse", icon: "📚" },
