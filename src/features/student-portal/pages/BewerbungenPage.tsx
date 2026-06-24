@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
-import type { Course, ModulCategory, Page, StudentApplication } from "@/features/student-portal/types";
-import { DraggableApplicationCard } from "@/features/student-portal/components/DraggableApplicationCard";
+import type { Page } from "@/features/student-portal/types";
 import { MeinBereichSubNav } from "@/features/student-portal/components/MeinBereichSubNav";
 import { StatusBadge } from "@/features/student-portal/components/StatusBadge";
-import { CourseCard } from "@/features/student-portal/components/CourseCard";
 import { studentPortalService } from "@/features/student-portal/services/studentPortalService";
 import {
   HSD_BLUE,
@@ -11,31 +9,16 @@ import {
   HSD_BORDER_LIGHT,
   HSD_DARK,
   HSD_GRAY,
-  HSD_LINK,
-  HSD_RED,
   HSD_TEAL,
 } from "@/features/student-portal/styles/tokens";
 
-export function BewerbungenPage({ setPage, scrollTarget, clearScrollTarget, onSelectCategory }: { setPage: (p: Page) => void; scrollTarget: string | null; clearScrollTarget: () => void; onSelectCategory?: (category: ModulCategory) => void }) {
+export function BewerbungenPage({ setPage, scrollTarget, clearScrollTarget }: { setPage: (p: Page) => void; scrollTarget: string | null; clearScrollTarget: () => void}) {
   const [categoryFilter, setCategoryFilter] = useState<string>("Alle");
-  const [semester, setSemester] = useState(4);
   const applications = studentPortalService.getApplications();
-  const courses = studentPortalService.getCoursesBySemester(semester);
 
   const filteredBewerbungen = categoryFilter === "Alle"
     ? applications
     : applications.filter(b => b.typ === categoryFilter || b.modul.includes(categoryFilter));
-
-    const handleCourseAction = (course: Course) => {
-    if (course.action?.type === "openOffers" && course.category && onSelectCategory) {
-      onSelectCategory(course.category);
-      return;
-    }
-
-    if (course.action?.type === "openCourse") {
-      alert(`Kurs öffnen: ${course.name}`);
-    }
-  };
 
   useEffect(() => {
     if (scrollTarget) {
@@ -208,50 +191,6 @@ export function BewerbungenPage({ setPage, scrollTarget, clearScrollTarget, onSe
           </div>
         ))}
       </div>
-
-      {/* Modulwahl section */}
-      <div
-        id="modulwahl-section"
-        className="bg-white rounded-lg p-5 mt-5"
-        style={{ border: `1px solid ${HSD_BORDER}`, boxShadow: "0 2px 2px rgba(0,0,0,0.06)" }}
-      >
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
-          <h2 className="text-lg font-bold" style={{ fontFamily: "'Segoe UI', sans-serif", color: HSD_DARK }}>Modulwahl</h2>
-          <div className="flex flex-wrap gap-1.5">
-            {[1, 2, 3, 4, 5, 6, 7].map((sem) => (
-              <button
-                key={sem}
-                onClick={() => setSemester(sem)}
-                className="px-3.5 py-1 rounded-full text-sm font-semibold transition-all"
-                style={{
-                  fontFamily: "'Segoe UI', sans-serif",
-                  backgroundColor: semester === sem ? HSD_BLUE : "transparent",
-                  color: semester === sem ? "white" : HSD_GRAY,
-                  border: `1.5px solid ${semester === sem ? HSD_BLUE : HSD_BORDER_LIGHT}`,
-                }}
-              >
-                {sem}. Sem
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {courses.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {courses.map((course) => (
-              <CourseCard
-                key={course.id}
-                course={course}
-                onAction={handleCourseAction}
-              />
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-10" style={{ color: HSD_GRAY, fontFamily: "'Segoe UI', sans-serif" }}>
-            Keine Kurse für dieses Semester verfügbar.
-          </div>
-        )}
       </div>
-    </div>
   );
 }

@@ -6,12 +6,13 @@ export type Page =
   | "modulwahl"
   | "bmi2018"
   | "studienverlaufsplan"
-  | "angebotDetail";
+  | "angebotDetail"
+  | "modulwahlUebersicht";
 
 export type ModulCategory =
   | "Vertiefung A"
   | "Vertiefung B"
-  | "Vertiefung c"
+  | "Vertiefung C"
   | "Vertiefung D"
   | "Medienprojekt A"
   | "Medienprojekt B"
@@ -33,11 +34,11 @@ export interface Bewerbung {
   modul: string;
 }
 
-export type CourseActionType = "openoffers" | "openCourse";
+export type CourseActionType = "openOffers" | "openCourse";
 
 export interface CourseAction {
   type: CourseActionType;
-  label: String;
+  label: string;
 }
 export interface Course {
   id: number;
