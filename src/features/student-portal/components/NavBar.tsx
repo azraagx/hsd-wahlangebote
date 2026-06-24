@@ -13,7 +13,7 @@ import {
 export function NavBar({ page, setPage }: { page: Page; setPage: (p: Page) => void }) {
   const [meinBereichOpen, setMeinBereichOpen] = useState(false);
 
-  const isMeinBereich = page === "bewerbungen" || page === "stundenplan" || page === "kurse";
+  const isMeinBereich = page === "bewerbungen" || page === "stundenplan" || page === "kurse" || page === "modulwahlUebersicht";
 
   return (
     <>
@@ -113,6 +113,14 @@ export function NavBar({ page, setPage }: { page: Page; setPage: (p: Page) => vo
                     <span style={{ color: HSD_BLUE }}>📚</span>
                     Meine Kurse
                   </button>
+                  <button
+                    className="w-full text-left px-4 py-2.5 text-sm hover:bg-gray-50 flex items-center gap-2"
+                    style={{ fontFamily: "'Segoe UI', sans-serif", color: page === "modulwahlUebersicht" ? HSD_LINK : HSD_DARK }}
+                    onClick={() => { setPage("modulwahlUebersicht"); setMeinBereichOpen(false); }}
+                  >
+                  <span style={{ color: HSD_BLUE }}>🧭</span>
+                  Modulwahl
+                </button>
                 </div>
               )}
             </div>

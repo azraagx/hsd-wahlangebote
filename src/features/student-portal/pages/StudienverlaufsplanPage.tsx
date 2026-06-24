@@ -107,7 +107,7 @@ export function StudienverlaufsplanPage({ setPage, navigateWithScroll }: { setPa
       {/* Navigation buttons */}
       <div className="mb-6 flex flex-col sm:flex-row justify-end gap-4">
         <button
-          onClick={() => navigateWithScroll ? navigateWithScroll("bewerbungen", "modulwahl-section") : setPage("bewerbungen")}
+          onClick={() => setPage("modulwahlUebersicht")}
           className="px-5 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-gray-300"
           style={{
             fontFamily: "'Segoe UI', sans-serif",

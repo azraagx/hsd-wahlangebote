@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-
+import { ModulwahlUebersichtPage } from "@/features/student-portal/pages/ModulwahlUebersichtPage";
 import type {
   Page,
   ModulCategory,
@@ -71,6 +71,7 @@ export default function App() {
           style={{ maxWidth: page === "modulwahl" ? "1400px" : "1200px", paddingTop: "calc(61px + 24px)" }}
         >
           {page === "home" && <HomePage setPage={setPage} />}
+          {page === "modulwahlUebersicht" && (<ModulwahlUebersichtPage setPage={setPage} onSelectCategory={handleSelectCategory}/>)}
           {page === "bewerbungen" && <BewerbungenPage setPage={setPage} scrollTarget={scrollTarget} clearScrollTarget={() => setScrollTarget(null)} onSelectCategory={handleSelectCategory} />}
           {page === "stundenplan" && <StundenplanPage setPage={setPage} />}
           {page === "kurse" && <MeineKursePage setPage={setPage} />}
