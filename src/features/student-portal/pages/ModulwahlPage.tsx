@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import type { ModulAngebot, ModulCategory, Page, StudentApplication } from "@/features/student-portal/types";
 import { DraggableApplicationCard } from "@/features/student-portal/components/DraggableApplicationCard";
-import { modulAngebote } from "@/features/student-portal/data/moduleOffers";
+import { studentPortalService } from "@/features/student-portal/services/studentPortalService";
 import {
   HSD_BLUE,
   HSD_BORDER,
@@ -20,10 +20,7 @@ export function ModulwahlPage({ onSelectAngebot, setPage, navigateWithScroll, se
     { id: 2, angebotId: 998, titel: "Mobile Anwendungen", kategorie: "TRADY, MDPR", status: "accepted", prioritat: 2 }
   ]);
 
-  // Filter angebote based on selected category
-  const filteredAngebote = selectedCategory
-    ? modulAngebote.filter(a => a.modulCategory === selectedCategory)
-    : modulAngebote;
+  const filteredAngebote = studentPortalService.getModuleOffers(selectedCategory);
 
   const moveCard = useCallback((dragIndex: number, hoverIndex: number) => {
     setApplications((prev) => {
