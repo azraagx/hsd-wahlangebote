@@ -1,6 +1,6 @@
 import type { Page } from "@/features/student-portal/types";
 import { MeinBereichSubNav } from "@/features/student-portal/components/MeinBereichSubNav";
-import { assignedCourses } from "@/features/student-portal/data/applications";
+import { studentPortalService } from "@/features/student-portal/services/studentPortalService";
 import {
   HSD_BORDER,
   HSD_DARK,
@@ -9,6 +9,7 @@ import {
 } from "@/features/student-portal/styles/tokens";
 
 export function MeineKursePage({ setPage }: { setPage: (p: Page) => void }) {
+  const assignedCourses = studentPortalService.getAssignedCourses();
   return (
     <div>
       {/* Back button */}

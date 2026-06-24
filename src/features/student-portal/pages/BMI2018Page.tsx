@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { Page } from "@/features/student-portal/types";
 import { CourseCard } from "@/features/student-portal/components/CourseCard";
-import { coursesBySemester } from "@/features/student-portal/data/courses";
+import { studentPortalService } from "@/features/student-portal/services/studentPortalService";
 import {
   HSD_BLUE,
   HSD_BORDER,
@@ -13,8 +13,7 @@ import {
 
 export function BMI2018Page({ setPage }: { setPage: (p: Page) => void }) {
   const [semester, setSemester] = useState(4);
-  const courses = coursesBySemester[semester] ?? [];
-
+  const courses = studentPortalService.getCoursesBySemester(semester);
   return (
     <div>
       {/* Back button */}
@@ -70,7 +69,6 @@ export function BMI2018Page({ setPage }: { setPage: (p: Page) => void }) {
               <CourseCard
                 key={course.id}
                 course={course}
-                onNavigate={course.modulNr === "VT-A" ? () => setPage("modulwahl") : undefined}
               />
             ))}
           </div>

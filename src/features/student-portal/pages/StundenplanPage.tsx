@@ -1,6 +1,7 @@
 import type { Page } from "@/features/student-portal/types";
 import { MeinBereichSubNav } from "@/features/student-portal/components/MeinBereichSubNav";
-import { DAYS, schedule, TIME_SLOTS } from "@/features/student-portal/data/schedule";
+import { DAYS, TIME_SLOTS } from "@/features/student-portal/data/schedule";
+import { studentPortalService } from "@/features/student-portal/services/studentPortalService";
 import {
   HSD_BLUE,
   HSD_BORDER,
@@ -10,6 +11,7 @@ import {
   HSD_LINK,
 } from "@/features/student-portal/styles/tokens";
 export function StundenplanPage({ setPage }: { setPage: (p: Page) => void }) {
+  const schedule = studentPortalService.getSchedule();
   const SLOT_H = 64;
 
   return (
