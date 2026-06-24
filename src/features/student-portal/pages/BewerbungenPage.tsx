@@ -16,9 +16,25 @@ export function BewerbungenPage({ setPage, scrollTarget, clearScrollTarget }: { 
   const [categoryFilter, setCategoryFilter] = useState<string>("Alle");
   const applications = studentPortalService.getApplications();
 
-  const filteredBewerbungen = categoryFilter === "Alle"
-    ? applications
-    : applications.filter(b => b.typ === categoryFilter || b.modul.includes(categoryFilter));
+  const filteredBewerbungen = applications.filter((bewerbung) => {
+  if (categoryFilter === "Alle") {
+    return true;
+  }
+
+  if (categoryFilter === "Vertiefungen") {
+    return bewerbung.typ.includes("Vertiefung") || bewerbung.modul.includes("Vertiefung");
+  }
+
+  if (categoryFilter === "Medienprojekte") {
+    return bewerbung.typ.includes("Medienprojekt") || bewerbung.modul.includes("Medienprojekt");
+  }
+
+  if (categoryFilter === "Informatikprojekte") {
+    return bewerbung.typ.includes("Informatikprojekt") || bewerbung.modul.includes("Informatikprojekt");
+  }
+
+  return bewerbung.typ === categoryFilter || bewerbung.modul.includes(categoryFilter);
+});
 
   useEffect(() => {
     if (scrollTarget) {
@@ -81,7 +97,7 @@ export function BewerbungenPage({ setPage, scrollTarget, clearScrollTarget }: { 
           <span className="text-sm font-semibold" style={{ fontFamily: "'Segoe UI', sans-serif", color: HSD_GRAY }}>
             Filtern nach:
           </span>
-          {["Alle", "Vertiefung A", "Vertiefung B", "Medienprojekt A", "Medienprojekt B", "Wahlmodul"].map((filter) => (
+          {["Alle", "Vertiefungen", "Medienprojekte", "Informatikprojekte", "Individuelle Vertiefung"].map((filter) => (
             <button
               key={filter}
               onClick={() => setCategoryFilter(filter)}
