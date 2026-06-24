@@ -4,8 +4,7 @@ import { DraggableApplicationCard } from "@/features/student-portal/components/D
 import { MeinBereichSubNav } from "@/features/student-portal/components/MeinBereichSubNav";
 import { StatusBadge } from "@/features/student-portal/components/StatusBadge";
 import { CourseCard } from "@/features/student-portal/components/CourseCard";
-import { bewerbungen } from "@/features/student-portal/data/applications";
-import { coursesBySemester } from "@/features/student-portal/data/courses";
+import { studentPortalService } from "@/features/student-portal/services/studentPortalService";
 import {
   HSD_BLUE,
   HSD_BORDER,
@@ -20,11 +19,12 @@ import {
 export function BewerbungenPage({ setPage, scrollTarget, clearScrollTarget, onSelectCategory }: { setPage: (p: Page) => void; scrollTarget: string | null; clearScrollTarget: () => void; onSelectCategory?: (category: ModulCategory) => void }) {
   const [categoryFilter, setCategoryFilter] = useState<string>("Alle");
   const [semester, setSemester] = useState(4);
-  const courses = coursesBySemester[semester] ?? [];
+  const applications = studentPortalService.getApplications();
+  const courses = studentPortalService.getCoursesBySemester(semester);
 
   const filteredBewerbungen = categoryFilter === "Alle"
-    ? bewerbungen
-    : bewerbungen.filter(b => b.typ === categoryFilter || b.modul.includes(categoryFilter));
+    ? applications
+    : applications.filter(b => b.typ === categoryFilter || b.modul.includes(categoryFilter));
 
     const handleCourseAction = (course: Course) => {
     if (course.action?.type === "openOffers" && course.category && onSelectCategory) {
@@ -72,10 +72,10 @@ export function BewerbungenPage({ setPage, scrollTarget, clearScrollTarget, onSe
       {/* Summary cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-5">
         {[
-          { label: "Gesamt", value: bewerbungen.length, color: HSD_BLUE, bg: "#e0f4f8" },
-          { label: "Angenommen", value: bewerbungen.filter(b => b.status === "angenommen").length, color: "#155724", bg: "#D4EDDA" },
-          { label: "In Bearbeitung", value: bewerbungen.filter(b => b.status === "in_bearbeitung").length, color: "#856404", bg: "#FFF3CD" },
-          { label: "Abgelehnt", value: bewerbungen.filter(b => b.status === "abgelehnt").length, color: "#842029", bg: "#F8D7DA" },
+          { label: "Gesamt", value: applications.length, color: HSD_BLUE, bg: "#e0f4f8" },
+          { label: "Angenommen", value: applications.filter(b => b.status === "angenommen").length, color: "#155724", bg: "#D4EDDA" },
+          { label: "In Bearbeitung", value: applications.filter(b => b.status === "in_bearbeitung").length, color: "#856404", bg: "#FFF3CD" },
+          { label: "Abgelehnt", value: applications.filter(b => b.status === "abgelehnt").length, color: "#842029", bg: "#F8D7DA" },
         ].map((stat) => (
           <div
             key={stat.label}
