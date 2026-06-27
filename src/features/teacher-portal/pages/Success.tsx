@@ -3,6 +3,7 @@ import { CheckCircle, Plus, LayoutDashboard, ExternalLink } from "lucide-react";
 import { useFormState } from "../context/FormContext";
 import confetti from "canvas-confetti";
 import { useEffect } from "react";
+import { getProjectTypeLabel } from "../utils/projectTypes";
 
 export default function Success() {
   const navigate = useNavigate();
@@ -29,17 +30,17 @@ export default function Success() {
     : (specializationData.selectedModule?.name || "Unbenanntes Modul");
 
   const subtitle = offerType === 'project'
-    ? Array.isArray(projectData.type) ? projectData.type.join(", ") : projectData.type
+    ? Array.isArray(projectData.type) ? projectData.type.map(getProjectTypeLabel).join(", ") : getProjectTypeLabel(projectData.type)
     : "Vertiefung / Wahlpflichtangebot";
 
   const handleCreateAnother = () => {
     resetFlow();
-    navigate("select-type");
+    navigate("/lehrender/select-type");
   };
 
   const handleDashboard = () => {
     resetFlow();
-    navigate("..");
+    navigate("/lehrender");
   };
 
   return (
@@ -95,7 +96,7 @@ export default function Success() {
               <LayoutDashboard className="h-4 w-4" /> Zur Übersicht
             </button>
             <button
-              onClick={() => navigate(lastSavedItemId ? `published/${lastSavedItemId}` : "published")}
+              onClick={() => navigate(lastSavedItemId ? `/lehrender/published/${lastSavedItemId}` : "/lehrender/published")}
               className="flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors"
               style={{ color: '#1d2125', fontSize: '14px' }}
             >

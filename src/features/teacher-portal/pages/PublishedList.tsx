@@ -1,7 +1,9 @@
 import { useNavigate } from "react-router";
 import { Eye, Clock, Users, BookOpen, FolderGit2 } from "lucide-react";
 import { useFormState, SavedItem } from "../context/FormContext";
+import { mockModules } from "../data/mockModules";
 import { useEffect, useState } from "react";
+import { getProjectTypeLabel } from "../utils/projectTypes";
 
 export default function PublishedList() {
   const navigate = useNavigate();
@@ -9,14 +11,29 @@ export default function PublishedList() {
   const [items, setItems] = useState<SavedItem[]>([]);
 
   useEffect(() => {
-    setItems(getSavedItems());
+    const savedItems = getSavedItems();
+    const savedItemIds = new Set(savedItems.map(item => item.id));
+    const mockItems = mockModules
+      .filter(module => !savedItemIds.has(module.id))
+      .map(module => ({
+        id: module.id,
+        name: module.name,
+        semester: "Wintersemester 26/27",
+        itemType: 'specialization' as const,
+        data: {
+          selectedModule: module,
+          studyPrograms: module.programs
+        },
+        savedAt: new Date().toISOString()
+      }));
+    setItems([...mockItems, ...savedItems]);
   }, [getSavedItems]);
 
   return (
     <div className="mx-auto max-w-5xl pb-20">
       <div className="mb-8">
         <button
-          onClick={() => navigate("..")}
+          onClick={() => navigate("/lehrender")}
           className="-ml-4 mb-4 px-3 py-2 hover:bg-gray-100 rounded transition-colors"
           style={{ color: '#00718b', fontSize: '14px' }}
         >
@@ -42,7 +59,7 @@ export default function PublishedList() {
             <div
               key={item.id}
               className="bg-white rounded-lg border border-[rgba(0,0,0,0.13)] shadow-[0px_2px_2px_rgba(0,0,0,0.08)] hover:shadow-[0px_4px_8px_rgba(0,0,0,0.12)] transition-all cursor-pointer group"
-              onClick={() => navigate(`published/${item.id}`)}
+              onClick={() => navigate(`/lehrender/published/${item.id}`)}
             >
               <div className="p-6 flex flex-col sm:flex-row gap-6 items-start sm:items-center justify-between">
                 <div className="space-y-2 flex-1">
@@ -70,7 +87,7 @@ export default function PublishedList() {
                     <div className="flex gap-2 flex-wrap">
                       {item.data.type.map((type: string, idx: number) => (
                         <span key={idx} className="px-2 py-1 rounded text-xs font-medium" style={{ backgroundColor: '#e0f4f8', color: '#005b70' }}>
-                          {type}
+                          {getProjectTypeLabel(type)}
                         </span>
                       ))}
                     </div>
@@ -110,7 +127,11 @@ export default function PublishedList() {
                   </div>
                 </div>
 
-                <button className="shrink-0 flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors" style={{ color: '#1d2125', fontSize: '14px' }}>
+                <button 
+                  onClick={() => navigate(`/lehrender/published/${item.id}`)}
+                  className="shrink-0 flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors" 
+                  style={{ color: '#1d2125', fontSize: '14px' }}
+                >
                   Details ansehen <Eye className="h-4 w-4" />
                 </button>
               </div>

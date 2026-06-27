@@ -19,13 +19,16 @@ interface PrototypeState {
   validationStatus: 'success' | 'warning' | null;
   semesterData: any;
   lastSavedItemId: string | null;
+  editingItemId: string | null;
   setOfferType: (type: OfferType) => void;
+  setEditingItemId: (id: string | null) => void;
   setAutoSave: (val: boolean) => void;
   updateProjectData: (data: any) => void;
   updateSpecializationData: (data: any) => void;
   setValidationStatus: (status: 'success' | 'warning' | null) => void;
   updateSemesterData: (data: any) => void;
   resetFlow: () => void;
+  resetProjectData: () => void;
   saveProject: () => void;
   saveSpecialization: () => void;
   getSavedItems: () => SavedItem[];
@@ -41,26 +44,26 @@ export function FormProvider({ children }: { children: React.ReactNode }) {
   const [autoSave, setAutoSave] = useState(true);
 
   const [projectData, setProjectData] = useState({
-    name: "Web-basiertes Campus-System",
-    type: ["Informatikprojekt 1"],
+    name: "",
+    type: [],
     studyPrograms: [],
     masterExtraEffort: "",
     moodleId: "",
     reuseRule: "none",
     notifyStudents: false,
-    electiveArea: "Informatikprojekt 1",
-    description: "Wir entwickeln ein neues Campus-System...",
-    goals: "Einführung in React und Node.js",
-    content: "Frontend-Entwicklung, REST-APIs",
-    requirements: "Grundlagen der Programmierung",
-    minPlaces: "5",
-    maxPlaces: "20",
-    moodleLink: "https://moodle.hochschule.de/course/123",
-    firstMeeting: "12.10.2026, 10:00 Uhr",
-    regularMeeting: "Dienstags, 10:00 - 11:30 Uhr",
-    location: "Raum A01",
-    applicationType: "Motivationsschreiben",
-    motivationLetterTemplate: "Bitte beschreiben Sie Ihre Vorkenntnisse in Web-Technologien und warum Sie an diesem Projekt teilnehmen möchten."
+    electiveArea: "",
+    description: "",
+    goals: "",
+    content: "",
+    requirements: "",
+    minPlaces: "",
+    maxPlaces: "",
+    moodleLink: "",
+    firstMeeting: "",
+    regularMeeting: "",
+    location: "",
+    applicationType: "",
+    motivationLetterTemplate: ""
   });
 
   const [specializationData, setSpecializationData] = useState({
@@ -87,15 +90,40 @@ export function FormProvider({ children }: { children: React.ReactNode }) {
   });
 
   const [lastSavedItemId, setLastSavedItemId] = useState<string | null>(null);
+  const [editingItemId, setEditingItemId] = useState<string | null>(null);
 
   const updateProjectData = (data: any) => setProjectData(prev => ({ ...prev, ...data }));
   const updateSpecializationData = (data: any) => setSpecializationData(prev => ({ ...prev, ...data }));
   const updateSemesterData = (data: any) => setSemesterData(prev => ({ ...prev, ...data }));
+  const resetProjectData = () => setProjectData({
+    name: "",
+    type: [],
+    studyPrograms: [],
+    masterExtraEffort: "",
+    moodleId: "",
+    reuseRule: "none",
+    notifyStudents: false,
+    electiveArea: "",
+    description: "",
+    goals: "",
+    content: "",
+    requirements: "",
+    minPlaces: "",
+    maxPlaces: "",
+    moodleLink: "",
+    firstMeeting: "",
+    regularMeeting: "",
+    location: "",
+    applicationType: "",
+    motivationLetterTemplate: ""
+  });
 
   const resetFlow = () => {
     setOfferType(null);
     setValidationStatus(null);
     setSemesterData({ semester: "Wintersemester 26/27", status: "Entwurf" });
+    setEditingItemId(null);
+    resetProjectData();
   };
 
   const getSavedItems = useCallback((): SavedItem[] => {
@@ -124,6 +152,12 @@ export function FormProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
+  const clampNonNegative = (value: string) => {
+    const parsed = parseInt(value, 10);
+    if (Number.isNaN(parsed)) return "";
+    return Math.max(0, parsed).toString();
+  };
+
   const saveProject = useCallback(() => {
     if (typeof window === 'undefined') return;
     try {
@@ -136,6 +170,33 @@ export function FormProvider({ children }: { children: React.ReactNode }) {
         (now - new Date(p.savedAt).getTime()) < 5000
       );
 
+      if (editingItemId) {
+        const existingIndex = items.findIndex(item => item.id === editingItemId && item.itemType === 'project');
+        const updatedItem: SavedItem = {
+          id: editingItemId,
+          name: projectData.name,
+          semester: semesterData.semester,
+          itemType: 'project',
+          data: {
+            ...projectData,
+            minPlaces: clampNonNegative(projectData.minPlaces),
+            maxPlaces: clampNonNegative(projectData.maxPlaces)
+          },
+          savedAt: new Date().toISOString()
+        };
+
+        if (existingIndex >= 0) {
+          items[existingIndex] = updatedItem;
+        } else {
+          items.push(updatedItem);
+        }
+
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+        setLastSavedItemId(editingItemId);
+        setEditingItemId(null);
+        return;
+      }
+
       if (recentDuplicate) {
         setLastSavedItemId(recentDuplicate.id);
         return;
@@ -146,16 +207,21 @@ export function FormProvider({ children }: { children: React.ReactNode }) {
         name: projectData.name,
         semester: semesterData.semester,
         itemType: 'project',
-        data: projectData,
+        data: {
+          ...projectData,
+          minPlaces: clampNonNegative(projectData.minPlaces),
+          maxPlaces: clampNonNegative(projectData.maxPlaces)
+        },
         savedAt: new Date().toISOString()
       };
       items.push(newItem);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
       setLastSavedItemId(newItem.id);
+      setEditingItemId(null);
     } catch (error) {
       console.error('Error saving project:', error);
     }
-  }, [projectData, semesterData, getSavedItems]);
+  }, [projectData, semesterData, getSavedItems, editingItemId]);
 
   const saveSpecialization = useCallback(() => {
     if (typeof window === 'undefined') return;
@@ -170,6 +236,32 @@ export function FormProvider({ children }: { children: React.ReactNode }) {
         (now - new Date(p.savedAt).getTime()) < 5000
       );
 
+      if (editingItemId) {
+        const existingIndex = items.findIndex(item => item.id === editingItemId && item.itemType === 'specialization');
+        const updatedItem: SavedItem = {
+          id: editingItemId,
+          name: moduleName,
+          semester: semesterData.semester,
+          itemType: 'specialization',
+          data: {
+            ...specializationData,
+            places: clampNonNegative(specializationData.places)
+          },
+          savedAt: new Date().toISOString()
+        };
+
+        if (existingIndex >= 0) {
+          items[existingIndex] = updatedItem;
+        } else {
+          items.push(updatedItem);
+        }
+
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+        setLastSavedItemId(editingItemId);
+        setEditingItemId(null);
+        return;
+      }
+
       if (recentDuplicate) {
         setLastSavedItemId(recentDuplicate.id);
         return;
@@ -180,16 +272,20 @@ export function FormProvider({ children }: { children: React.ReactNode }) {
         name: moduleName,
         semester: semesterData.semester,
         itemType: 'specialization',
-        data: specializationData,
+        data: {
+          ...specializationData,
+          places: clampNonNegative(specializationData.places)
+        },
         savedAt: new Date().toISOString()
       };
       items.push(newItem);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
       setLastSavedItemId(newItem.id);
+      setEditingItemId(null);
     } catch (error) {
       console.error('Error saving specialization:', error);
     }
-  }, [specializationData, semesterData, getSavedItems]);
+  }, [specializationData, semesterData, getSavedItems, editingItemId]);
 
   const loadProject = useCallback((projectId: string) => {
     const items = getSavedItems();
@@ -208,9 +304,12 @@ export function FormProvider({ children }: { children: React.ReactNode }) {
       validationStatus, setValidationStatus,
       semesterData, updateSemesterData,
       lastSavedItemId,
+      editingItemId,
       resetFlow,
+      resetProjectData,
       saveProject,
       saveSpecialization,
+      setEditingItemId,
       getSavedItems,
       loadProject
     }}>

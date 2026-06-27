@@ -1,19 +1,39 @@
 import { useNavigate, useParams } from "react-router";
 import { Users, FileText, BarChart3, Clock, Eye, FileEdit, CheckCircle2, BookOpen, FolderGit2 } from "lucide-react";
 import { useFormState, SavedItem } from "../context/FormContext";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
+import { mockModules } from "../data/mockModules";
+import { getProjectTypeLabel } from "../utils/projectTypes";
+import { getMockApplicationsForOffer } from "../data/mockApplications";
 
 export default function PublishedDetail() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const { getSavedItems, loadProject, setOfferType } = useFormState();
+  const { getSavedItems, loadProject, setOfferType, updateSpecializationData, setEditingItemId } = useFormState();
   const [item, setItem] = useState<SavedItem | null>(null);
-  // Stable random stats per item id
-  const statsRef = useRef<{ applications: number } | null>(null);
 
   useEffect(() => {
-    const items = getSavedItems();
-    const found = items.find(p => p.id === id);
+    const savedItems = getSavedItems();
+    let found = savedItems.find(p => p.id === id);
+    
+    // Falls nicht in saved items, prüfe mock modules
+    if (!found) {
+      const mockModule = mockModules.find(m => m.id === id);
+      if (mockModule) {
+        found = {
+          id: mockModule.id,
+          name: mockModule.name,
+          semester: "Wintersemester 26/27",
+          itemType: 'specialization' as const,
+          data: {
+            selectedModule: mockModule,
+            studyPrograms: mockModule.programs
+          },
+          savedAt: new Date().toISOString()
+        };
+      }
+    }
+    
     if (found) setItem(found);
   }, [id, getSavedItems]);
 
@@ -21,7 +41,7 @@ export default function PublishedDetail() {
     return (
       <div className="mx-auto max-w-5xl pb-20">
         <button
-          onClick={() => navigate("published")}
+          onClick={() => navigate("/lehrender/published")}
           className="-ml-4 mb-4 px-3 py-2 hover:bg-gray-100 rounded transition-colors"
           style={{ color: '#00718b', fontSize: '14px' }}
         >
@@ -37,26 +57,46 @@ export default function PublishedDetail() {
   const isProject = item.itemType === 'project';
 
   const maxPlaces = parseInt(isProject ? item.data?.maxPlaces || "0" : item.data?.places || "0");
-  const meeting = isProject ? item.data?.regularMeeting : item.data?.meetings;
-  const location = isProject ? item.data?.location : item.data?.location;
-  const applicationType = isProject ? item.data?.applicationType : item.data?.applicationType;
+  const meeting = isProject ? item.data?.regularMeeting : (item.data?.meetings || "");
+  const location = isProject ? item.data?.location : (item.data?.location || "");
+  const applicationType = isProject ? item.data?.applicationType : (item.data?.applicationType || "");
   const projectTypes: string[] = isProject ? (item.data?.type || []) : [];
   const tags: string[] = !isProject ? (item.data?.selectedModule?.tags || []) : [];
+  const studyPrograms = !isProject ? (item.data?.studyPrograms || item.data?.selectedModule?.programs || []) : [];
+  const specializationDescription = !isProject ? (item.data?.selectedModule?.description || item.data?.description || "") : "";
+  const specializationCategory = !isProject ? (item.data?.selectedModule?.category || item.data?.category || "") : "";
+  const specializationExamination = !isProject ? (item.data?.selectedModule?.examinationForm || item.data?.examinationForm || "") : "";
+  const specializationExtraNotes = !isProject ? (item.data?.extraNotes || "") : "";
+  const specializationMasterNotes = !isProject ? (item.data?.masterStudentNotes || "") : "";
 
-  if (!statsRef.current) {
-    statsRef.current = { applications: Math.floor((parseInt(id!.replace(/\D/g, '').slice(-3) || '0')) % 35) + 8 };
-  }
-  const applications = statsRef.current.applications;
+  const applications = getMockApplicationsForOffer(item.id).length;
   const utilizationPercent = maxPlaces > 0 ? Math.round((applications / maxPlaces) * 100) : 0;
 
   const handleEdit = () => {
     if (isProject) {
       loadProject(item.id);
+      setEditingItemId(item.id);
       setOfferType('project');
-      navigate('create-project?edit=true');
+      navigate('/lehrender/create-project?edit=true');
     } else {
+      updateSpecializationData({
+        selectedModule: item.data?.selectedModule || null,
+        studyPrograms: item.data?.studyPrograms || item.data?.selectedModule?.programs || [],
+        places: item.data?.places || "",
+        moodleLink: item.data?.moodleLink || "",
+        moodleId: item.data?.moodleId || "",
+        applicationType: item.data?.applicationType || "",
+        meetings: item.data?.meetings || "",
+        location: item.data?.location || "",
+        groupWish: item.data?.groupWish || false,
+        extraNotes: item.data?.extraNotes || "",
+        masterStudentNotes: item.data?.masterStudentNotes || "",
+        notifyStudents: item.data?.notifyStudents || false,
+        reuseRule: item.data?.reuseRule || "none"
+      });
+      setEditingItemId(item.id);
       setOfferType('specialization');
-      navigate('import-specialization?edit=true');
+      navigate('/lehrender/import-specialization?edit=true');
     }
   };
 
@@ -65,7 +105,7 @@ export default function PublishedDetail() {
       <div className="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
         <div className="w-full sm:w-auto">
           <button
-            onClick={() => navigate("published")}
+            onClick={() => navigate("/lehrender/published")}
             className="-ml-4 mb-4 px-3 py-2 hover:bg-gray-100 rounded transition-colors"
             style={{ color: '#00718b', fontSize: '14px' }}
           >
@@ -92,7 +132,7 @@ export default function PublishedDetail() {
 
           {isProject && projectTypes.length > 0 && (
             <p className="mt-2" style={{ color: '#6a737b', fontSize: '14px' }}>
-              {projectTypes.join(", ")}
+              {projectTypes.map(getProjectTypeLabel).join(", ")}
             </p>
           )}
           {!isProject && tags.length > 0 && (
@@ -106,13 +146,22 @@ export default function PublishedDetail() {
           )}
         </div>
 
-        <button
-          onClick={handleEdit}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg font-bold text-white hover:opacity-90 transition-opacity"
-          style={{ backgroundColor: '#00afd7', fontSize: '14px' }}
-        >
-          <FileEdit className="h-4 w-4" /> Angebot bearbeiten
-        </button>
+        <div className="flex flex-col sm:flex-row gap-3">
+          <button
+            onClick={() => navigate(`/lehrender/published/${item.id}/applications`)}
+            className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg border font-bold hover:bg-gray-50 transition-colors"
+            style={{ borderColor: '#00afd7', color: '#00718b', fontSize: '14px' }}
+          >
+            <FileText className="h-4 w-4" /> Bewerbungen ansehen
+          </button>
+          <button
+            onClick={handleEdit}
+            className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-bold text-white hover:opacity-90 transition-opacity"
+            style={{ backgroundColor: '#00afd7', fontSize: '14px' }}
+          >
+            <FileEdit className="h-4 w-4" /> Angebot bearbeiten
+          </button>
+        </div>
       </div>
 
       {/* Stats */}
@@ -195,10 +244,34 @@ export default function PublishedDetail() {
             Vertiefungsdetails
           </h2>
           <div className="grid md:grid-cols-2 gap-4">
+            {specializationCategory && (
+              <div>
+                <div className="text-xs font-semibold mb-1" style={{ color: '#6a737b' }}>Kategorie</div>
+                <div style={{ color: '#1d2125', fontSize: '14px' }}>{specializationCategory}</div>
+              </div>
+            )}
+            {specializationExamination && (
+              <div>
+                <div className="text-xs font-semibold mb-1" style={{ color: '#6a737b' }}>Prüfungsform</div>
+                <div style={{ color: '#1d2125', fontSize: '14px' }}>{specializationExamination}</div>
+              </div>
+            )}
+            {studyPrograms.length > 0 && (
+              <div>
+                <div className="text-xs font-semibold mb-1" style={{ color: '#6a737b' }}>Studiengänge</div>
+                <div style={{ color: '#1d2125', fontSize: '14px' }}>{studyPrograms.join(", ")}</div>
+              </div>
+            )}
             {location && (
               <div>
                 <div className="text-xs font-semibold mb-1" style={{ color: '#6a737b' }}>Ort / Raum</div>
                 <div style={{ color: '#1d2125', fontSize: '14px' }}>{location}</div>
+              </div>
+            )}
+            {meeting && (
+              <div>
+                <div className="text-xs font-semibold mb-1" style={{ color: '#6a737b' }}>Termin</div>
+                <div style={{ color: '#1d2125', fontSize: '14px' }}>{meeting}</div>
               </div>
             )}
             {applicationType && (
@@ -207,16 +280,22 @@ export default function PublishedDetail() {
                 <div style={{ color: '#1d2125', fontSize: '14px' }}>{applicationType}</div>
               </div>
             )}
-            {item.data?.extraNotes && (
+            {specializationDescription && (
               <div>
-                <div className="text-xs font-semibold mb-1" style={{ color: '#6a737b' }}>Zusatzhinweise</div>
-                <div style={{ color: '#1d2125', fontSize: '14px' }}>{item.data.extraNotes}</div>
+                <div className="text-xs font-semibold mb-1" style={{ color: '#6a737b' }}>Inhalte & Ziele</div>
+                <div style={{ color: '#1d2125', fontSize: '14px', lineHeight: 1.6 }}>{specializationDescription}</div>
               </div>
             )}
-            {item.data?.masterStudentNotes && (
+            {specializationExtraNotes && (
+              <div>
+                <div className="text-xs font-semibold mb-1" style={{ color: '#6a737b' }}>Zusatzhinweise</div>
+                <div style={{ color: '#1d2125', fontSize: '14px' }}>{specializationExtraNotes}</div>
+              </div>
+            )}
+            {specializationMasterNotes && (
               <div>
                 <div className="text-xs font-semibold mb-1" style={{ color: '#6a737b' }}>Hinweise für Masterstudenten</div>
-                <div style={{ color: '#1d2125', fontSize: '14px' }}>{item.data.masterStudentNotes}</div>
+                <div style={{ color: '#1d2125', fontSize: '14px' }}>{specializationMasterNotes}</div>
               </div>
             )}
           </div>
@@ -238,9 +317,9 @@ export default function PublishedDetail() {
 
       <div className="flex justify-end border-t pt-6" style={{ borderColor: '#dee2e6' }}>
         <button
-          className="flex items-center gap-2 px-6 py-3 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors"
+          className="flex items-center justify-center gap-2 px-6 py-3 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors"
           style={{ color: '#1d2125', fontSize: '14px' }}
-          onClick={() => navigate("preview")}
+          onClick={() => navigate("/lehrender/preview", { state: { source: "published", item } })}
         >
           <Eye className="h-4 w-4" /> Studierenden-Vorschau ansehen
         </button>

@@ -2,33 +2,7 @@ import { useState } from "react";
 import { useNavigate, useLocation } from "react-router";
 import { Search, CheckCircle2, ChevronRight, Eye, Download, X } from "lucide-react";
 import { useFormState } from "../context/FormContext";
-
-const mockModules = [
-  {
-    id: "m1",
-    name: "Web Engineering",
-    tags: ["Web", "Software Architektur"],
-    programs: ["BMI-PO 2018", "BMI-PO 2025", "MMI-PO 2025"]
-  },
-  {
-    id: "m2",
-    name: "Einführung Künstliche Intelligenz",
-    tags: ["KI", "Python"],
-    programs: ["BMI-PO 2025", "BMT-PO 2025", "DAISY-PO 2018", "DAISY-PO 2025"]
-  },
-  {
-    id: "m3",
-    name: "User Experience Design",
-    tags: ["UX", "Design"],
-    programs: ["BMI-PO 2018", "BMI-PO 2025", "BMT-PO 2018", "BMT-PO 2025", "MMI-PO 2018", "MMI-PO 2025"]
-  },
-  {
-    id: "m4",
-    name: "Mobile App-Entwicklung",
-    tags: ["App-Entwicklung", "UX"],
-    programs: ["BMI-PO 2025", "BMT-PO 2025"]
-  },
-];
+import { mockModules } from "../data/mockModules";
 
 const availableTags = ["Java", "Web", "KI", "UX", "Datenbanken", "App-Entwicklung"];
 const PROGRAMS = ["BMI", "BMT", "BTB", "DAISY", "MMI", "TRADY"];
@@ -54,7 +28,7 @@ export default function SpecializationForm() {
     return matchesSearch && matchesTags;
   });
 
-  const handleNext = () => navigate("preview");
+  const handleNext = () => navigate("/lehrender/preview");
 
   const handleMoodleImport = () => {
     if (!specializationData.moodleId) return;
@@ -69,13 +43,19 @@ export default function SpecializationForm() {
   const textareaClass = "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#00afd7] focus:border-transparent resize-vertical";
   const labelClass = "block text-xs font-semibold mb-1";
 
+  const clampNonNegative = (value: string) => {
+    const parsed = parseInt(value, 10);
+    if (Number.isNaN(parsed)) return "";
+    return Math.max(0, parsed).toString();
+  };
+
   return (
     <div className="mx-auto max-w-5xl pb-20">
       {/* Header */}
       <div className="mb-8 flex flex-col md:flex-row md:items-start justify-between gap-4">
         <div>
           <button
-            onClick={() => navigate("select-type")}
+            onClick={() => navigate("/lehrender/select-type")}
             className="-ml-4 mb-4 px-3 py-2 hover:bg-gray-100 rounded transition-colors"
             style={{ color: '#00718b', fontSize: '14px' }}
           >
@@ -90,7 +70,7 @@ export default function SpecializationForm() {
         </div>
         {specializationData.selectedModule && (
           <button
-            onClick={() => navigate("preview")}
+            onClick={() => navigate("/lehrender/preview")}
             className="shrink-0 flex items-center gap-2 px-4 py-2 rounded-md border hover:bg-gray-50 transition-colors"
             style={{ borderColor: '#00afd7', color: '#00afd7', fontSize: '14px' }}
           >
@@ -250,8 +230,9 @@ export default function SpecializationForm() {
                     <input
                       id="places"
                       type="number"
+                      min={0}
                       value={specializationData.places}
-                      onChange={e => updateSpecializationData({ places: e.target.value })}
+                      onChange={e => updateSpecializationData({ places: clampNonNegative(e.target.value) })}
                       className={inputClass}
                       style={{ fontSize: '14px' }}
                     />
