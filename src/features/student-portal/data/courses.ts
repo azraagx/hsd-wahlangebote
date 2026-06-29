@@ -5,7 +5,7 @@ export const coursesBySemester: Record<number, Course[]> = {
     {
       id: 1,
       name: "Objektorientierte Programmierung 1",
-      modulNr: "BMI",
+      modulNr: "BMI 10",
       dozent: "",
       ects: 5,
       beschreibung: "Pflicht-/Basismodul - Vorlesung + Praktikum",
