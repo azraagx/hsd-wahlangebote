@@ -1,32 +1,65 @@
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { User, Users, MapPin, Calendar, Clock, AlertCircle, Send } from "lucide-react";
 import { Button } from "@/app/components/ui";
-import { useFormState } from "../context/FormContext";
+import { SavedItem, useFormState } from "../context/FormContext";
+import { getProjectTypeLabel } from "../utils/projectTypes";
 
 export default function Preview() {
   const navigate = useNavigate();
-  const { offerType, projectData, specializationData, semesterData } = useFormState();
+  const location = useLocation();
+  const { offerType, projectData, specializationData, semesterData, updateProjectData, updateSpecializationData, setOfferType, setEditingItemId } = useFormState();
 
-  const isProject = offerType === 'project';
+  const previewItem = (location.state as { source?: string; item?: SavedItem } | null)?.item;
+  const isPublishedPreview = (location.state as { source?: string } | null)?.source === 'published' && !!previewItem;
+  const isProject = isPublishedPreview ? previewItem.itemType === 'project' : offerType === 'project';
 
   // Prepare data for view based on type
-  const title = isProject ? projectData.name : (specializationData.selectedModule?.name || "Unbenanntes Modul");
-  const projectTypes = isProject && Array.isArray(projectData.type) ? projectData.type : [];
-  const places = isProject ? projectData.maxPlaces : specializationData.places;
-  const appType = isProject ? projectData.applicationType : specializationData.applicationType;
-  const reqs = isProject ? projectData.requirements : "Voraussetzungen aus Modulhandbuch...";
-  const content = isProject ? projectData.content : "Inhalte aus Modulhandbuch...";
-  const goals = isProject ? projectData.goals : "";
-  const description = isProject ? projectData.description : "";
-  const meetings = isProject ? projectData.regularMeeting : specializationData.meetings;
-  const location = isProject ? projectData.location : specializationData.location;
-  const firstMeeting = isProject ? projectData.firstMeeting : "";
+  const title = isPublishedPreview ? previewItem.name : (isProject ? projectData.name : (specializationData.selectedModule?.name || "Unbenanntes Modul"));
+  const projectTypes = isProject && Array.isArray((isPublishedPreview ? previewItem.data?.type : projectData.type)) ? (isPublishedPreview ? previewItem.data.type : projectData.type) : [];
+  const places = isProject ? (isPublishedPreview ? previewItem.data?.maxPlaces : projectData.maxPlaces) : (isPublishedPreview ? previewItem.data?.places : specializationData.places);
+  const appType = isProject ? (isPublishedPreview ? previewItem.data?.applicationType : projectData.applicationType) : (isPublishedPreview ? previewItem.data?.applicationType : specializationData.applicationType);
+  const reqs = isProject ? (isPublishedPreview ? previewItem.data?.requirements : projectData.requirements) : "Voraussetzungen aus Modulhandbuch...";
+  const content = isProject ? (isPublishedPreview ? previewItem.data?.content : projectData.content) : "Inhalte aus Modulhandbuch...";
+  const goals = isProject ? (isPublishedPreview ? previewItem.data?.goals : projectData.goals) : "";
+  const description = isProject ? (isPublishedPreview ? previewItem.data?.description : projectData.description) : (isPublishedPreview ? previewItem.data?.selectedModule?.description : "");
+  const meetings = isProject ? (isPublishedPreview ? previewItem.data?.regularMeeting : projectData.regularMeeting) : (isPublishedPreview ? previewItem.data?.meetings : specializationData.meetings);
+  const locationValue = isProject ? (isPublishedPreview ? previewItem.data?.location : projectData.location) : (isPublishedPreview ? previewItem.data?.location : specializationData.location);
+  const firstMeeting = isProject ? (isPublishedPreview ? previewItem.data?.firstMeeting : projectData.firstMeeting) : "";
+
+  const handleBack = () => {
+    if (isPublishedPreview && previewItem?.id) {
+      navigate(`/lehrender/published/${previewItem.id}`);
+      return;
+    }
+    navigate(offerType === 'project' ? "/lehrender/create-project" : "/lehrender/import-specialization");
+  };
+
+  const handleSecondaryAction = () => {
+    if (isPublishedPreview && previewItem?.id) {
+      setEditingItemId(previewItem.id);
+      if (previewItem.itemType === 'project') {
+        updateProjectData(previewItem.data || {});
+        setOfferType('project');
+        navigate(`/lehrender/create-project?edit=true`);
+      } else {
+        updateSpecializationData({
+          ...(previewItem.data || {}),
+          selectedModule: previewItem.data?.selectedModule || null,
+          studyPrograms: previewItem.data?.studyPrograms || previewItem.data?.selectedModule?.programs || []
+        });
+        setOfferType('specialization');
+        navigate(`/lehrender/import-specialization?edit=true`);
+      }
+      return;
+    }
+    navigate("/lehrender/success");
+  };
 
   return (
     <div className="mx-auto max-w-5xl pb-20">
       <div className="mb-8">
-        <Button variant="ghost" onClick={() => navigate(offerType === 'project' ? "create-project" : "import-specialization")} className="-ml-4 mb-4" style={{ color: '#00718b' }}>
-          &larr; Zurück zur Bearbeitung
+        <Button variant="ghost" onClick={handleBack} className="-ml-4 mb-4" style={{ color: '#00718b' }}>
+          {isPublishedPreview ? '← Zurück zum Angebot' : '← Zurück zur Bearbeitung'}
         </Button>
         <h1 style={{ fontFamily: "'Segoe UI Light', 'Segoe UI', sans-serif", fontWeight: 300, color: '#e3000f', fontSize: '32px' }}>Studierenden-Vorschau</h1>
         <p className="mt-2" style={{ color: '#6a737b' }}>So wird Ihr Angebot den Studierenden im Portal angezeigt.</p>
@@ -43,7 +76,7 @@ export default function Preview() {
               <div className="flex flex-wrap gap-2">
                 {projectTypes.map((type: string) => (
                   <div key={type} className="bg-[#e0f4f8] px-2 py-1 rounded text-xs font-semibold" style={{ color: '#005b70' }}>
-                    {type}
+                    {getProjectTypeLabel(type)}
                   </div>
                 ))}
                 <div className="bg-[#d4edda] px-2 py-1 rounded text-xs font-semibold" style={{ color: '#155724' }}>
@@ -133,10 +166,10 @@ export default function Preview() {
                 <div style={{ color: '#1d2125', fontSize: '14px' }}>{firstMeeting}</div>
               </div>
             )}
-            {location && (
+            {locationValue && (
               <div>
                 <div className="text-xs font-semibold mb-1" style={{ color: '#6a737b' }}>Ort</div>
-                <div style={{ color: '#1d2125', fontSize: '14px' }}>{location}</div>
+                <div style={{ color: '#1d2125', fontSize: '14px' }}>{locationValue}</div>
               </div>
             )}
             <div>
@@ -192,12 +225,18 @@ export default function Preview() {
 
       {/* Action Buttons */}
       <div className="flex flex-col sm:flex-row gap-4 justify-between pt-8 mt-8 border-t">
-        <Button variant="outline" onClick={() => navigate(offerType === 'project' ? "create-project" : "import-specialization")}>
-          Zurück zur Bearbeitung
+        <Button variant="outline" onClick={handleBack}>
+          {isPublishedPreview ? 'Zurück zur Übersicht' : 'Zurück zur Bearbeitung'}
         </Button>
-        <Button size="lg" className="bg-red-600 hover:bg-red-700 text-white" onClick={() => navigate("success")}>
-          Angebot Veröffentlichen
-        </Button>
+        {isPublishedPreview ? (
+          <Button size="lg" className="bg-[#00afd7] hover:opacity-90 text-white" onClick={handleSecondaryAction}>
+            Angebot bearbeiten
+          </Button>
+        ) : (
+          <Button size="lg" className="bg-red-600 hover:bg-red-700 text-white" onClick={() => navigate("/lehrender/success")}>
+            Angebot Veröffentlichen
+          </Button>
+        )}
       </div>
     </div>
   );

@@ -5,22 +5,26 @@ import { useFormState } from "../context/FormContext";
 
 export default function TypeSelect() {
   const navigate = useNavigate();
-  const { offerType, setOfferType } = useFormState();
+  const { offerType, setOfferType, setEditingItemId, resetProjectData } = useFormState();
 
   const [projectMode, setProjectMode] = React.useState<"new" | "existing">("new");
 
   const handleNext = () => {
+    setEditingItemId(null);
     if (offerType === "project") {
-      navigate(projectMode === "existing" ? "create-project?mode=existing" : "create-project");
+      if (projectMode === "new") {
+        resetProjectData();
+      }
+      navigate(projectMode === "existing" ? "/lehrender/create-project?mode=existing" : "/lehrender/create-project");
     }
-    if (offerType === "specialization") navigate("import-specialization");
+    if (offerType === "specialization") navigate("/lehrender/import-specialization");
   };
 
   return (
     <div className="mx-auto max-w-4xl">
       <div className="mb-8">
         <button
-          onClick={() => navigate("..")}
+          onClick={() => navigate("/lehrender")}
           className="-ml-4 mb-4 px-3 py-2 hover:bg-gray-100 rounded transition-colors"
           style={{ color: '#00718b', fontSize: '14px' }}
         >
@@ -40,7 +44,7 @@ export default function TypeSelect() {
           className={`bg-white rounded-lg border shadow-[0px_2px_2px_rgba(0,0,0,0.08)] p-8 cursor-pointer transition-all hover:shadow-[0px_4px_8px_rgba(0,0,0,0.12)] ${
             offerType === 'project' ? 'border-[#00afd7] ring-2 ring-[#00afd7]/20' : 'border-[rgba(0,0,0,0.13)]'
           }`}
-          onClick={() => setOfferType('project')}
+          onClick={() => { setEditingItemId(null); setOfferType('project'); }}
         >
           <div className={`mb-6 inline-flex rounded-lg p-3 ${offerType === 'project' ? 'bg-[#e0f4f8]' : 'bg-gray-100'}`}>
             <FolderGit2 className="h-6 w-6" style={{ color: offerType === 'project' ? '#00afd7' : '#6a737b' }} />
@@ -98,7 +102,7 @@ export default function TypeSelect() {
           className={`bg-white rounded-lg border shadow-[0px_2px_2px_rgba(0,0,0,0.08)] p-8 cursor-pointer transition-all hover:shadow-[0px_4px_8px_rgba(0,0,0,0.12)] ${
             offerType === 'specialization' ? 'border-[#00afd7] ring-2 ring-[#00afd7]/20' : 'border-[rgba(0,0,0,0.13)]'
           }`}
-          onClick={() => setOfferType('specialization')}
+          onClick={() => { setEditingItemId(null); setOfferType('specialization'); }}
         >
           <div className={`mb-6 inline-flex rounded-lg p-3 ${offerType === 'specialization' ? 'bg-[#e0f4f8]' : 'bg-gray-100'}`}>
             <BookOpen className="h-6 w-6" style={{ color: offerType === 'specialization' ? '#00afd7' : '#6a737b' }} />

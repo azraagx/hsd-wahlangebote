@@ -8,6 +8,7 @@ import Preview from "@/features/teacher-portal/pages/Preview";
 import Success from "@/features/teacher-portal/pages/Success";
 import PublishedList from "@/features/teacher-portal/pages/PublishedList";
 import PublishedDetail from "@/features/teacher-portal/pages/PublishedDetail";
+import ApplicationsReview from "@/features/teacher-portal/pages/ApplicationsReview";
 import StudentPortalPage from "@/features/student-portal/pages/StudentPortalPage";
 
 export const router = createBrowserRouter([
@@ -24,6 +25,7 @@ export const router = createBrowserRouter([
       { path: "success", Component: Success },
       { path: "published", Component: PublishedList },
       { path: "published/:id", Component: PublishedDetail },
+      { path: "published/:id/applications", Component: ApplicationsReview },
       { path: "*", Component: () => { window.location.href = "/lehrender"; return null; } },
     ],
   },

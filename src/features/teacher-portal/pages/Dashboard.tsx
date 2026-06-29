@@ -8,7 +8,7 @@ export default function Dashboard() {
 
   const handleCreateNew = () => {
     resetFlow();
-    navigate("select-type");
+    navigate("/lehrender/select-type");
   };
 
   return (
@@ -40,7 +40,7 @@ export default function Dashboard() {
         {/* Published */}
         <div
           className="bg-white rounded-lg border border-[rgba(0,0,0,0.13)] shadow-[0px_2px_2px_rgba(0,0,0,0.08)] p-10 cursor-pointer hover:shadow-[0px_4px_8px_rgba(0,0,0,0.12)] transition-all"
-          onClick={() => navigate("published")}
+          onClick={() => navigate("/lehrender/published")}
         >
           <div className="flex flex-col items-center justify-center text-center h-full min-h-[200px]">
             <div className="mb-5 rounded-full bg-[#d4edda] p-4">

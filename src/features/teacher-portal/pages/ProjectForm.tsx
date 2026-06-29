@@ -1,10 +1,62 @@
 import { useNavigate, useLocation } from "react-router";
 import { useMemo } from "react";
 import { useFormState } from "../context/FormContext";
-import { Info, Eye, Download, AlertTriangle } from "lucide-react";
+import { Info, Eye, AlertTriangle } from "lucide-react";
+import { getProjectTypeLabel, makeProjectTypeValue } from "../utils/projectTypes";
 
-const PROGRAMS = ["BMI", "BMT", "BTB", "DAISY", "MMI", "TRADY"];
+const PROGRAMS = ["BMI", "BMT", "BTB", "DAISY", "MMI"];
 const PO_YEARS = ["PO 2018", "PO 2025"];
+
+type ProjectTypeOption = { label: string; value: string; credits?: string };
+
+const projectTypeOption = (programPoId: string, label: string, credits: string): ProjectTypeOption => ({
+  label,
+  value: makeProjectTypeValue(programPoId, label),
+  credits
+});
+
+const PROGRAM_PROJECT_TYPES: Record<string, ProjectTypeOption[]> = {
+  "BMI-PO 2018": [
+    projectTypeOption("BMI-PO 2018", "Informatikprojekt 1", "5 CP"),
+    projectTypeOption("BMI-PO 2018", "Informatikprojekt 2", "5 CP"),
+    projectTypeOption("BMI-PO 2018", "Medienprojekt A/B", "5 CP")
+  ],
+  "BMI-PO 2025": [
+    projectTypeOption("BMI-PO 2025", "Informatikprojekt 1", "5 CP"),
+    projectTypeOption("BMI-PO 2025", "Informatikprojekt 2", "5 CP"),
+    projectTypeOption("BMI-PO 2025", "Medienprojekt A/B", "5 CP")
+  ],
+  "BTB-PO 2018": [
+    projectTypeOption("BTB-PO 2018", "Projekt 5 CP", "5 CP"),
+    projectTypeOption("BTB-PO 2018", "Projekt 10 CP", "10 CP")
+  ],
+  "BTB-PO 2025": [
+    projectTypeOption("BTB-PO 2025", "Projekt A/B", "5 CP"),
+    projectTypeOption("BTB-PO 2025", "Projekterweiterung A/B", "5 CP")
+  ],
+  "BMT-PO 2018": [
+    projectTypeOption("BMT-PO 2018", "Medienprojekt A/B", "5 CP"),
+    projectTypeOption("BMT-PO 2018", "Medienprojekt A1/B1", "5 CP"),
+    projectTypeOption("BMT-PO 2018", "Medienprojekt A2/B2", "5 CP")
+  ],
+  "BMT-PO 2025": [
+    projectTypeOption("BMT-PO 2025", "Basisprojekt", "5 CP"),
+    projectTypeOption("BMT-PO 2025", "Projekt Medientechnik", "5 CP"),
+    projectTypeOption("BMT-PO 2025", "Medientechnik Erweiterung", "5 CP")
+  ],
+  "MMI-PO 2018": [
+    projectTypeOption("MMI-PO 2018", "Masterprojekt 1", "10 CP"),
+    projectTypeOption("MMI-PO 2018", "Masterprojekt 2", "10 CP"),
+    projectTypeOption("MMI-PO 2018", "Masterprojekt 3", "10 CP"),
+    projectTypeOption("MMI-PO 2018", "Individuelles Projekt", "10 CP")
+  ],
+  "MMI-PO 2025": [
+    projectTypeOption("MMI-PO 2025", "Masterprojekt 1", "10 CP"),
+    projectTypeOption("MMI-PO 2025", "Masterprojekt 2", "10 CP"),
+    projectTypeOption("MMI-PO 2025", "Masterprojekt 3", "10 CP"),
+    projectTypeOption("MMI-PO 2025", "Individuelles Projekt", "10 CP")
+  ]
+};
 
 export default function ProjectForm() {
   const navigate = useNavigate();
@@ -16,10 +68,10 @@ export default function ProjectForm() {
   const savedProjects = useMemo(() => getSavedItems().filter(i => i.itemType === 'project'), [getSavedItems]);
 
   const handleNext = () => {
-    navigate("preview");
+    navigate("/lehrender/preview");
   };
 
-  const selectedProjectTypes: string[] = Array.isArray(projectData.type) ? projectData.type : [projectData.type];
+  const selectedProjectTypes: string[] = (Array.isArray(projectData.type) ? projectData.type : [projectData.type]).filter(Boolean);
 
   const toggleProjectType = (projectType: string) => {
     if (selectedProjectTypes.includes(projectType)) {
@@ -31,51 +83,42 @@ export default function ProjectForm() {
   };
 
   const hasInformatikprojekt = selectedProjectTypes.some(type =>
-    type === "Informatikprojekt 1" || type === "Informatikprojekt 2"
+    getProjectTypeLabel(type) === "Informatikprojekt 1" || getProjectTypeLabel(type) === "Informatikprojekt 2"
   );
 
   const hasMedienprojekt = selectedProjectTypes.some(type =>
-    type === "Medienprojekt A" || type === "Medienprojekt B"
+    getProjectTypeLabel(type).includes("Medienprojekt")
   );
 
   const showInfoAlert = hasInformatikprojekt;
   const isCombination = hasInformatikprojekt && hasMedienprojekt;
 
-  const selectedPrograms: string[] = projectData.studyPrograms || [];
-
-  const toggleProgram = (id: string) => {
-    if (selectedPrograms.includes(id)) {
-      updateProjectData({ studyPrograms: selectedPrograms.filter(p => p !== id) });
-    } else {
-      updateProjectData({ studyPrograms: [...selectedPrograms, id] });
-    }
-  };
-
-  const isMasterSelected = selectedPrograms.some(p => p.startsWith("MMI") || p.startsWith("DAISY") || p.startsWith("TRADY"));
-  const isBachelorSelected = selectedPrograms.some(p => !p.startsWith("MMI") && !p.startsWith("DAISY") && !p.startsWith("TRADY"));
+  const isMasterSelected = selectedProjectTypes.some(type => 
+    getProjectTypeLabel(type).includes("Masterprojekt") || getProjectTypeLabel(type).includes("Individuelles Projekt")
+  );
+  const isBachelorSelected = selectedProjectTypes.some(type => 
+    !getProjectTypeLabel(type).includes("Masterprojekt") && !getProjectTypeLabel(type).includes("Individuelles Projekt")
+  );
 
   const showMasterWarning = isMasterSelected && isBachelorSelected;
   const isNextDisabled = showMasterWarning && (!projectData.masterExtraEffort || projectData.masterExtraEffort.trim() === "");
 
-  const handleMoodleImport = () => {
-    if (!projectData.moodleId) return;
-    alert("Moodle-Daten erfolgreich aus ID " + projectData.moodleId + " importiert.");
-    updateProjectData({
-      moodleLink: "https://moodle.hochschule.de/course/view.php?id=" + projectData.moodleId,
-      description: projectData.description || "Importierte Beschreibung aus Moodle...",
-    });
-  };
-
   const inputClass = "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#00afd7] focus:border-transparent";
   const textareaClass = "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#00afd7] focus:border-transparent resize-vertical";
   const labelClass = "block text-xs font-semibold mb-1";
+
+  const clampNonNegative = (value: string) => {
+    const parsed = parseInt(value, 10);
+    if (Number.isNaN(parsed)) return "";
+    return Math.max(0, parsed).toString();
+  };
 
   return (
     <div className="mx-auto max-w-5xl pb-20">
       <div className="mb-8 flex flex-col md:flex-row md:items-start justify-between gap-4">
         <div>
           <button
-            onClick={() => navigate("select-type")}
+            onClick={() => navigate("/lehrender/select-type")}
             className="-ml-4 mb-4 px-3 py-2 hover:bg-gray-100 rounded transition-colors"
             style={{ color: '#00718b', fontSize: '14px' }}
           >
@@ -89,7 +132,7 @@ export default function ProjectForm() {
           </p>
         </div>
         <button
-          onClick={() => navigate("preview")}
+          onClick={() => navigate("/lehrender/preview")}
           className="shrink-0 flex items-center gap-2 px-4 py-2 rounded-md border hover:bg-gray-50 transition-colors"
           style={{ borderColor: '#00afd7', color: '#00afd7', fontSize: '14px' }}
         >
@@ -108,59 +151,15 @@ export default function ProjectForm() {
 
               if (value.startsWith("project-")) {
                 loadProject(value);
-              } else if (value === "proj1") {
-                updateProjectData({
-                  name: "Web-App Entwicklung mit React",
-                  type: ["Informatikprojekt 1", "Informatikprojekt 2"],
-                  description: "Entwicklung einer modernen Web-Anwendung mit React und Tailwind CSS.",
-                  goals: "Die Studierenden lernen moderne Web-Technologien kennen und können eine vollständige Anwendung entwickeln.",
-                  content: "React, Tailwind CSS, REST-APIs, Git, Deployment",
-                  requirements: "Grundlagen der Programmierung (z.B. aus Programmieren 1)",
-                  studyPrograms: ["BMI-PO 2025", "MMI-PO 2025"],
-                  masterExtraEffort: "Eine zusätzliche Ausarbeitung im Umfang von 10 Seiten über erweiterte React-Patterns.",
-                  minPlaces: "5",
-                  maxPlaces: "20",
-                  firstMeeting: "15.10.2026, 10:00 Uhr",
-                  regularMeeting: "Dienstags, 10:00 - 11:30 Uhr",
-                  location: "Raum A01",
-                  applicationType: "Motivationsschreiben",
-                  motivationLetterTemplate: "Bitte beschreiben Sie Ihre Vorkenntnisse in Web-Technologien und warum Sie an diesem Projekt teilnehmen möchten.",
-                  moodleId: "4512",
-                  moodleLink: "https://moodle.hochschule.de/course/view.php?id=4512",
-                  reuseRule: "winter",
-                  notifyStudents: false
-                });
-              } else if (value === "proj2") {
-                updateProjectData({
-                  name: "KI in der Bildgebung",
-                  type: ["Medienprojekt A", "Medienprojekt B"],
-                  description: "Forschungsprojekt zur Anwendung von KI-Modellen in der medizinischen Bildgebung.",
-                  goals: "Verstehen von KI-Algorithmen im medizinischen Kontext und praktische Anwendung.",
-                  content: "Machine Learning, Computer Vision, medizinische Bildverarbeitung, Python",
-                  requirements: "Kenntnisse in Programmierung, Interesse an KI und Medizin",
-                  studyPrograms: ["BMT-PO 2018"],
-                  masterExtraEffort: "",
-                  minPlaces: "3",
-                  maxPlaces: "10",
-                  firstMeeting: "16.10.2026, 14:00 Uhr",
-                  regularMeeting: "Mittwochs, 14:00 - 16:00 Uhr",
-                  location: "Labor B12",
-                  applicationType: "Direkte Anmeldung",
-                  motivationLetterTemplate: "",
-                  moodleId: "",
-                  moodleLink: "",
-                  reuseRule: "summer",
-                  notifyStudents: false
-                });
               }
             }}
           >
             <option value="">-- Bitte wählen --</option>
-            <optgroup label="Beispielprojekte">
-              <option value="proj1">WiSe 23/24 - Web-App Entwicklung mit React (Prof. Schmidt)</option>
-              <option value="proj2">SoSe 23 - KI in der Bildgebung (Prof. Müller)</option>
-            </optgroup>
-            {savedProjects.length > 0 && (
+            {savedProjects.length === 0 ? (
+              <option value="" disabled>
+                Noch keine Projekte erstellt
+              </option>
+            ) : (
               <optgroup label="Gespeicherte Projekte">
                 {savedProjects.map(project => (
                   <option key={project.id} value={project.id}>
@@ -197,37 +196,6 @@ export default function ProjectForm() {
               />
             </div>
 
-            <div>
-              <label className={labelClass} style={{ color: '#6a737b' }}>Projektart(en)</label>
-              <div className="grid grid-cols-2 gap-3">
-                {["Informatikprojekt 1", "Informatikprojekt 2", "Medienprojekt A", "Medienprojekt B"].map(projectType => {
-                  const isChecked = selectedProjectTypes.includes(projectType);
-                  return (
-                    <div
-                      key={projectType}
-                      className={`border rounded-lg p-3 cursor-pointer transition-all ${
-                        isChecked ? 'border-[#00afd7] bg-[#e0f4f8]' : 'border-gray-300 hover:border-gray-400'
-                      }`}
-                      onClick={() => toggleProjectType(projectType)}
-                    >
-                      <div className="flex items-center gap-2">
-                        <input
-                          type="checkbox"
-                          checked={isChecked}
-                          onChange={() => toggleProjectType(projectType)}
-                          className="w-4 h-4"
-                          style={{ accentColor: '#00afd7' }}
-                        />
-                        <div className="flex-1">
-                          <div className="font-medium" style={{ color: '#1d2125', fontSize: '14px' }}>{projectType}</div>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
             {showInfoAlert && (
               <div className="bg-[#e0f4f8] border border-[#00afd7] rounded-lg p-4 flex gap-3">
                 <Info className="h-5 w-5 shrink-0 mt-0.5" style={{ color: '#00afd7' }} />
@@ -253,39 +221,65 @@ export default function ProjectForm() {
             Studiengänge & WPM-Zuordnung
           </h2>
 
-          <div className="border border-gray-300 rounded-lg overflow-hidden">
-            <div className="grid grid-cols-3 bg-gray-100 border-b">
-              <div className="p-3 font-semibold" style={{ color: '#1d2125', fontSize: '14px' }}>Studiengang</div>
-              {PO_YEARS.map(po => (
-                <div key={po} className="p-3 font-semibold text-center border-l" style={{ color: '#1d2125', fontSize: '14px', borderColor: '#dee2e6' }}>
-                  {po}
-                </div>
-              ))}
-            </div>
+          <div className="space-y-6">
             {PROGRAMS.map(prog => (
-              <div key={prog} className="grid grid-cols-3 border-b last:border-0" style={{ borderColor: '#dee2e6' }}>
-                <div className="p-3 font-medium flex items-center" style={{ color: '#1d2125', fontSize: '14px' }}>{prog}</div>
-                {PO_YEARS.map(po => {
-                  const id = `${prog}-${po}`;
-                  const isChecked = selectedPrograms.includes(id);
-
-                  return (
-                    <div key={id} className="p-3 border-l flex items-center justify-center" style={{ borderColor: '#dee2e6' }}>
-                      <div className="flex flex-col items-center gap-1">
-                        <input
-                          type="checkbox"
-                          checked={isChecked}
-                          onChange={() => toggleProgram(id)}
-                          className="w-4 h-4"
-                          style={{ accentColor: '#00afd7' }}
-                        />
-                        {isChecked && (
-                          <span className="text-[10px] font-semibold" style={{ color: '#155724' }}>Ausgewählt</span>
+              <div key={prog} className="border border-gray-300 rounded-lg overflow-hidden">
+                <div className="bg-gray-100 p-3 font-semibold" style={{ color: '#1d2125', fontSize: '14px', borderColor: '#dee2e6' }}>
+                  {prog}
+                </div>
+                <div className="grid grid-cols-2 gap-0">
+                  {PO_YEARS.map(po => {
+                    const programPoId = `${prog}-${po}`;
+                    const projectsForThisProgramPo = PROGRAM_PROJECT_TYPES[programPoId] || [];
+                    
+                    return (
+                      <div key={po} className="p-4 border-r border-b last:border-r-0" style={{ borderColor: '#dee2e6' }}>
+                        <div className="font-semibold mb-3" style={{ color: '#1d2125', fontSize: '13px' }}>
+                          {po}
+                        </div>
+                        {projectsForThisProgramPo.length > 0 ? (
+                          <div className="space-y-2">
+                            {projectsForThisProgramPo.map(project => {
+                              const isChecked = selectedProjectTypes.includes(project.value);
+                              return (
+                                <div
+                                  key={project.value}
+                                  className={`flex items-start gap-2 p-2 rounded cursor-pointer transition-colors ${
+                                    isChecked ? 'bg-[#e0f4f8]' : 'hover:bg-gray-50'
+                                  }`}
+                                  onClick={() => toggleProjectType(project.value)}
+                                >
+                                  <input
+                                    type="checkbox"
+                                    checked={isChecked}
+                                    onChange={() => toggleProjectType(project.value)}
+                                    onClick={e => e.stopPropagation()}
+                                    className="w-4 h-4 mt-0.5"
+                                    style={{ accentColor: '#00afd7' }}
+                                  />
+                                  <div className="flex-1 min-w-0">
+                                    <div className="text-sm font-medium" style={{ color: '#1d2125', fontSize: '12px' }}>
+                                      {project.label}
+                                    </div>
+                                    {project.credits && (
+                                      <div className="text-xs" style={{ color: '#6a737b', fontSize: '11px' }}>
+                                        {project.credits}
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        ) : (
+                          <div className="text-xs text-slate-400" style={{ fontSize: '11px' }}>
+                            Keine Projekte verfügbar
+                          </div>
                         )}
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </div>
             ))}
           </div>
@@ -332,6 +326,7 @@ export default function ProjectForm() {
                 id="description"
                 value={projectData.description}
                 onChange={e => updateProjectData({ description: e.target.value })}
+                placeholder="z.B. Entwicklung eines webbasierten Campus-Systems"
                 className={textareaClass}
                 rows={3}
                 style={{ fontSize: '14px' }}
@@ -343,6 +338,7 @@ export default function ProjectForm() {
                 id="goals"
                 value={projectData.goals}
                 onChange={e => updateProjectData({ goals: e.target.value })}
+                placeholder="z.B. Einführung in React und Node.js"
                 className={textareaClass}
                 rows={3}
                 style={{ fontSize: '14px' }}
@@ -354,6 +350,7 @@ export default function ProjectForm() {
                 id="content"
                 value={projectData.content}
                 onChange={e => updateProjectData({ content: e.target.value })}
+                placeholder="z.B. Frontend-Entwicklung, REST-APIs, Deployment"
                 className={textareaClass}
                 rows={3}
                 style={{ fontSize: '14px' }}
@@ -365,6 +362,7 @@ export default function ProjectForm() {
                 id="requirements"
                 value={projectData.requirements}
                 onChange={e => updateProjectData({ requirements: e.target.value })}
+                placeholder="z.B. Grundlagen der Programmierung"
                 className={textareaClass}
                 rows={3}
                 style={{ fontSize: '14px' }}
@@ -385,8 +383,10 @@ export default function ProjectForm() {
               <input
                 id="minPlaces"
                 type="number"
+                min={0}
                 value={projectData.minPlaces}
-                onChange={e => updateProjectData({ minPlaces: e.target.value })}
+                onChange={e => updateProjectData({ minPlaces: clampNonNegative(e.target.value) })}
+                placeholder="z.B. 5"
                 className={inputClass}
                 style={{ fontSize: '14px' }}
               />
@@ -396,8 +396,10 @@ export default function ProjectForm() {
               <input
                 id="maxPlaces"
                 type="number"
+                min={0}
                 value={projectData.maxPlaces}
-                onChange={e => updateProjectData({ maxPlaces: e.target.value })}
+                onChange={e => updateProjectData({ maxPlaces: clampNonNegative(e.target.value) })}
+                placeholder="z.B. 20"
                 className={inputClass}
                 style={{ fontSize: '14px' }}
               />
@@ -409,6 +411,7 @@ export default function ProjectForm() {
                 type="text"
                 value={projectData.firstMeeting}
                 onChange={e => updateProjectData({ firstMeeting: e.target.value })}
+                placeholder="z.B. 12.10.2026, 10:00 Uhr"
                 className={inputClass}
                 style={{ fontSize: '14px' }}
               />
@@ -420,6 +423,7 @@ export default function ProjectForm() {
                 type="text"
                 value={projectData.regularMeeting}
                 onChange={e => updateProjectData({ regularMeeting: e.target.value })}
+                placeholder="z.B. Dienstags, 10:00 - 11:30 Uhr"
                 className={inputClass}
                 style={{ fontSize: '14px' }}
               />
@@ -431,33 +435,10 @@ export default function ProjectForm() {
                 type="text"
                 value={projectData.location}
                 onChange={e => updateProjectData({ location: e.target.value })}
+                placeholder="z.B. Raum A01"
                 className={inputClass}
                 style={{ fontSize: '14px' }}
               />
-            </div>
-            <div>
-              <label htmlFor="moodleId" className={labelClass} style={{ color: '#6a737b' }}>Moodle-Import (Kurs-ID)</label>
-              <div className="flex gap-2">
-                <input
-                  id="moodleId"
-                  type="text"
-                  value={projectData.moodleId || ""}
-                  onChange={e => updateProjectData({ moodleId: e.target.value })}
-                  placeholder="z.B. 4512"
-                  className={inputClass}
-                  style={{ fontSize: '14px' }}
-                />
-                <button
-                  onClick={handleMoodleImport}
-                  className="px-4 py-2 rounded-md font-medium text-white hover:opacity-90 transition-opacity flex items-center gap-2 whitespace-nowrap"
-                  style={{ backgroundColor: '#00afd7', fontSize: '14px' }}
-                >
-                  <Download className="h-4 w-4" /> Import
-                </button>
-              </div>
-              {projectData.moodleLink && (
-                <p className="text-xs mt-1" style={{ color: '#155724' }}>Verknüpft: {projectData.moodleLink}</p>
-              )}
             </div>
           </div>
         </div>
@@ -479,6 +460,7 @@ export default function ProjectForm() {
                   className={inputClass}
                   style={{ fontSize: '14px' }}
                 >
+                  <option value="">-- Bitte wählen --</option>
                   <option value="Direkte Anmeldung">Direkte Anmeldung</option>
                   <option value="Motivationsschreiben">Motivationsschreiben</option>
                 </select>
@@ -493,7 +475,7 @@ export default function ProjectForm() {
                     id="motivationLetterTemplate"
                     value={projectData.motivationLetterTemplate}
                     onChange={e => updateProjectData({ motivationLetterTemplate: e.target.value })}
-                    placeholder="Was sollen die Studierenden beantworten?"
+                    placeholder="z.B. Bitte beschreiben Sie Ihre Vorkenntnisse und warum Sie an diesem Projekt teilnehmen möchten."
                     className={textareaClass}
                     rows={4}
                     style={{ fontSize: '14px' }}
