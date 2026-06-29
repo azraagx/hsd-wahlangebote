@@ -12,6 +12,7 @@ import {
   HSD_RED,
   HSD_TEAL,
 } from "@/features/student-portal/styles/tokens";
+import { ElectionProcessInfo } from "@/features/student-portal/components/ElectionProcessInfo";
 
 export function ModulwahlPage({ onSelectAngebot, setPage, navigateWithScroll, selectedCategory }: { onSelectAngebot?: (angebot: ModulAngebot) => void; setPage?: (p: Page) => void; navigateWithScroll?: (page: Page, section?: string) => void; selectedCategory?: ModulCategory | null }) {
   const [selectedAngebot, setSelectedAngebot] = useState<ModulAngebot | null>(null);
@@ -71,7 +72,7 @@ export function ModulwahlPage({ onSelectAngebot, setPage, navigateWithScroll, se
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-3xl mb-2" style={{ fontFamily: "'Segoe UI Light', 'Segoe UI', sans-serif", fontWeight: 300, color: HSD_DARK }}>
-          {selectedCategory || "MEDIENPROJEKT Δ"}
+          {selectedCategory || "MEDIENPROJEKT A"}
         </h1>
         <div className="flex items-center gap-2 text-sm" style={{ color: HSD_GRAY, fontFamily: "'Segoe UI', sans-serif" }}>
           <a href="#" style={{ color: HSD_LINK }} onClick={(e) => e.preventDefault()}>Kurs</a>
@@ -81,39 +82,22 @@ export function ModulwahlPage({ onSelectAngebot, setPage, navigateWithScroll, se
       </div>
 
       {/* Info Banner */}
-      <div
-        className="bg-white rounded-lg p-5 mb-6"
-        style={{ border: `1px solid ${HSD_BORDER}`, boxShadow: "0 2px 2px rgba(0,0,0,0.06)" }}
-      >
-        <h2 className="text-base font-bold mb-3" style={{ fontFamily: "'Segoe UI', sans-serif", color: HSD_DARK }}>
-          Meine Bewerbungen für ein Wahl-Angebot zu diesem Wahlpflicht-Modul
-        </h2>
-        <p className="text-sm mb-4 leading-relaxed" style={{ fontFamily: "'Segoe UI', sans-serif", color: HSD_GRAY }}>
-          Mehr Infos finden Sie auf der <a href="#" style={{ color: HSD_LINK }} onClick={(e) => e.preventDefault()}>Fachbereichs-Webseite für Wahlmodule</a>,
-          dort finden Sie auch rechts oben eine ausführliche Anleitung.
-        </p>
+      <ElectionProcessInfo
+        applicationDeadline="Beginn der Bewerbungen: 30.03.2026 13:00 Uhr
+                             Ende der Bewerbungen: 8.04.2026 08:00 Uhr"
+        rounds={[
+          {label: "Runde 1", deadline: "08.04.2026, 14:00 Uhr"},
+          { label: "Runde 2", deadline: "09.04.2026, 08:00 Uhr" },
+          { label: "Runde 3", deadline: "09.04.2026, 14:00 Uhr" },
+          { label: "Runde 4", deadline: "10.04.2026, 08:00 Uhr" },
+          { label: "Runde 5", deadline: "10.04.2026, 14:00 Uhr" },
+        ]}
+        infoUrl="https://medien.hs-duesseldorf.de/studium/wahlangebote"
+        guideUrl="https://medien.hs-duesseldorf.de/studium/wahlangebote/Documents/Wahl-Angebot%20in%20Moodle%20-%20Informieren%20und%20Bewerben.pdf"
+      />
 
         {/* Timeline */}
-        <div className="bg-gray-50 rounded-lg p-4" style={{ border: `1px solid ${HSD_BORDER_LIGHT}` }}>
-          <h3 className="text-sm font-bold mb-3" style={{ fontFamily: "'Segoe UI', sans-serif", color: HSD_DARK }}>
-            📅 Termine
-          </h3>
-          <div className="space-y-2 text-sm" style={{ fontFamily: "'Segoe UI', sans-serif", color: HSD_GRAY }}>
-            <div className="flex justify-between">
-              <span>Ende Bewerbung:</span>
-              <span className="font-semibold" style={{ color: HSD_DARK }}>08.04.2026 08:00</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Runde 1:</span>
-              <span className="font-semibold" style={{ color: HSD_DARK }}>09.04.2026 14:00</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Runde 2-5:</span>
-              <span className="font-semibold" style={{ color: HSD_DARK }}>09.04 - 10.04.2026</span>
-            </div>
-          </div>
-        </div>
-      </div>
+        
 
       {/* Two-column split-screen layout */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
