@@ -58,17 +58,6 @@ export function ModulwahlPage({ onSelectAngebot, setPage, navigateWithScroll, se
 
   return (
     <div>
-      {/* Back button */}
-      <div className="mb-3">
-        <button
-          onClick={() => navigateWithScroll ? navigateWithScroll("bewerbungen", "modulwahl-section") : setPage("bewerbungen")}
-          className="text-sm hover:underline"
-          style={{ fontFamily: "'Segoe UI', sans-serif", color: HSD_LINK }}
-        >
-          ← Zurück zu Meine Bewerbungen
-        </button>
-      </div>
-
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-3xl mb-2" style={{ fontFamily: "'Segoe UI Light', 'Segoe UI', sans-serif", fontWeight: 300, color: HSD_DARK }}>

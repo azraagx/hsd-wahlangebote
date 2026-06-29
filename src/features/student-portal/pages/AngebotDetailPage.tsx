@@ -21,15 +21,8 @@ export function AngebotDetailPage({ angebot, setPage, onApply }: { angebot: Modu
   return (
     <div>
       {/* Back button */}
-      <div className="mb-3">
-        <button
-          onClick={() => setPage("modulwahl")}
-          className="text-sm hover:underline"
-          style={{ fontFamily: "'Segoe UI', sans-serif", color: HSD_LINK }}
-        >
-          ← Zurück zur Modulwahl
-        </button>
-      </div>
+      
+      
 
       {/* Header Card */}
       <div
