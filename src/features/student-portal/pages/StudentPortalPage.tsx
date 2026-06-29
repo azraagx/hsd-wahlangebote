@@ -19,11 +19,32 @@ import { ModulwahlPage } from "@/features/student-portal/pages/ModulwahlPage";
 import { BMI2018Page } from "@/features/student-portal/pages/BMI2018Page";
 import { StudienverlaufsplanPage } from "@/features/student-portal/pages/StudienverlaufsplanPage";
 import { AngebotDetailPage } from "@/features/student-portal/pages/AngebotDetailPage";
-
+import { useSearchParams } from "react-router";
+import { BackButton } from "@/features/student-portal/components/BackButton";
 // ─── App ──────────────────────────────────────────────────────────────────────
 // ─── App ──────────────────────────────────────────────────────────────────────
 export default function App() {
-  const [page, setPage] = useState<Page>("home");
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const page = (searchParams.get("view") as Page | null) ?? "home";
+
+  const setPage = useCallback(
+    (nextPage: Page) => {
+      if(nextPage === page){
+        return;
+      }
+      const nextParams = new URLSearchParams(searchParams);
+
+      if (nextPage === "home") {
+        nextParams.delete("view");
+      } else {
+        nextParams.set("view", nextPage);
+      }
+
+      setSearchParams(nextParams);
+    },
+    [page, searchParams, setSearchParams],
+  );
   const [scrollTarget, setScrollTarget] = useState<string | null>(null);
   const [selectedAngebot, setSelectedAngebot] = useState<ModulAngebot | null>(null);
   const [showApplicationModal, setShowApplicationModal] = useState(false);
@@ -70,6 +91,7 @@ export default function App() {
           className="mx-auto px-6 py-6"
           style={{ maxWidth: page === "modulwahl" ? "1400px" : "1200px", paddingTop: "calc(61px + 24px)" }}
         >
+          {page !== "home" && <BackButton />}
           {page === "home" && <HomePage setPage={setPage} />}
           {page === "modulwahlUebersicht" && (<ModulwahlUebersichtPage setPage={setPage} onSelectCategory={handleSelectCategory}/>)}
           {page === "bewerbungen" && <BewerbungenPage setPage={setPage} scrollTarget={scrollTarget} clearScrollTarget={() => setScrollTarget(null)} onSelectCategory={handleSelectCategory} />}

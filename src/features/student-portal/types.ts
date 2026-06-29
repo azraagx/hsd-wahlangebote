@@ -19,7 +19,6 @@ export type ModulCategory =
   | "Informatikprojekt 1"
   | "Informatikprojekt 2"
   | "Pflichtmodul"
-  | "Wahlmodul"
   | "Wissenschaftliche Vertiefung"
   | "Individuelle Vertiefung";
 
@@ -28,7 +27,7 @@ export type StatusType = "angenommen" | "in_bearbeitung" | "abgelehnt";
 export interface Bewerbung {
   id: number;
   name: string;
-  typ: "Wahlmodul" | "Vertiefung" | "Vertiefung A" | "Vertiefung B";
+  typ:  "Vertiefung" | "Vertiefung A" | "Vertiefung B";
   datum: string;
   status: StatusType;
   modul: string;
