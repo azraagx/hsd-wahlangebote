@@ -1,4 +1,4 @@
-import type { ModulAngebot } from "@/features/student-portal/types";
+import type { ModulAngebot, ModulCategory } from "@/features/student-portal/types";
 import {
   HSD_BLUE,
   HSD_BORDER_LIGHT,
@@ -10,6 +10,7 @@ import {
 interface ApplicationModalProps {
   angebot: ModulAngebot;
   motivationText: string;
+  selectedCategory: ModulCategory | null;
   onMotivationTextChange: (value: string) => void;
   onCancel: () => void;
   onSubmit: () => void;
@@ -17,20 +18,17 @@ interface ApplicationModalProps {
 
 export function ApplicationModal({
   angebot,
+  selectedCategory,
   motivationText,
   onMotivationTextChange,
   onCancel,
   onSubmit,
 }: ApplicationModalProps) {
-  const wordCount =
-    motivationText.trim().length === 0
-      ? 0
-      : motivationText.trim().split(/\s+/).filter((word) => word.length > 0).length;
-
+  
   const requiresMotivationLetter = angebot.bewerbungsinfo.motivationLetter;
   const isMedienprojekt =
-    angebot.modulCategory === "Medienprojekt A" ||
-    angebot.modulCategory === "Medienprojekt B";
+    selectedCategory === "Medienprojekt A" ||
+    selectedCategory === "Medienprojekt B";
 
   const isSubmitDisabled = requiresMotivationLetter && motivationText.trim().length < 50;
 
@@ -127,10 +125,10 @@ export function ApplicationModal({
                   className="text-xs"
                   style={{
                     fontFamily: "'Segoe UI', sans-serif",
-                    color: wordCount > 3000 ? HSD_RED : HSD_GRAY,
+                    color: motivationText.length > 3000 ? HSD_RED : HSD_GRAY,
                   }}
                 >
-                  {wordCount} / 3500 Wörter
+                  {motivationText.length} / 3500 Zeichen
                 </p>
               </div>
             </div>

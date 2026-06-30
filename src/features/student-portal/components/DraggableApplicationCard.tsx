@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import type { StudentApplication } from "@/features/student-portal/types";
 import {
@@ -8,6 +8,7 @@ import {
   HSD_GRAY,
   HSD_RED,
 } from "@/features/student-portal/styles/tokens";
+import { ApplicationViewModal } from "@/features/student-portal/components/ApplicationViewModal";
 
 const DND_TYPE = "APPLICATION_CARD";
 
@@ -22,6 +23,8 @@ export function DraggableApplicationCard({
   moveCard: (dragIndex: number, hoverIndex: number) => void;
   onRemove: (id: number) => void;
 }) {
+const [showApplication, setShowApplication] = useState(false);
+
   const [{ isDragging }, drag] = useDrag({
     type: DND_TYPE,
     item: () => ({ index }),
@@ -40,12 +43,44 @@ export function DraggableApplicationCard({
   });
 
   const statusColors = {
-    pending: { bg: "#FFF3CD", text: "#856404", label: "Ausstehend" },
-    accepted: { bg: "#D4EDDA", text: "#155724", label: "Angenommen" },
-    rejected: { bg: "#F8D7DA", text: "#842029", label: "Abgelehnt" }
-  };
+  pending: {
+    bg: "#FFF3CD",
+    text: "#856404",
+    label: "In Bearbeitung",
+  },
+  accepted: {
+    bg: "#D4EDDA",
+    text: "#155724",
+    label: "Angenommen",
+  },
+  rejected: {
+    bg: "#F8D7DA",
+    text: "#842029",
+    label: "Abgelehnt",
+  },
+  entwurf: {
+    bg: "#E2E3E5",
+    text: "#41464B",
+    label: "Noch nicht gespeichert",
+  },
+  in_bearbeitung: {
+    bg: "#FFF3CD",
+    text: "#856404",
+    label: "In Bearbeitung",
+  },
+  angenommen: {
+    bg: "#D4EDDA",
+    text: "#155724",
+    label: "Angenommen",
+  },
+  abgelehnt: {
+    bg: "#F8D7DA",
+    text: "#842029",
+    label: "Abgelehnt",
+  },
+};
 
-  const statusCfg = statusColors[app.status];
+const statusCfg = statusColors[app.status] ?? statusColors.entwurf;
 
   const setRef = useCallback((node: HTMLDivElement | null) => {
     drag(drop(node));
@@ -98,7 +133,25 @@ export function DraggableApplicationCard({
         >
           {statusCfg.label}
         </span>
+        {app.motivationText && (
+    <button
+      type="button"
+      onMouseDown={(event) => event.stopPropagation()}
+      onClick={() => setShowApplication(true)}
+      className="text-xs font-semibold hover:underline"
+      style={{ color: HSD_BLUE }}
+    >
+      Bewerbung bearbeiten
+    </button>
+  )}
       </div>
+      {showApplication && (
+        <ApplicationViewModal
+          application={app}
+          editable
+          onClose={() => setShowApplication(false)}
+        />
+)}
     </div>
   );
 }

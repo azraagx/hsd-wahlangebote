@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { ModulwahlUebersichtPage } from "@/features/student-portal/pages/ModulwahlUebersichtPage";
@@ -21,9 +21,11 @@ import { StudienverlaufsplanPage } from "@/features/student-portal/pages/Studien
 import { AngebotDetailPage } from "@/features/student-portal/pages/AngebotDetailPage";
 import { useSearchParams } from "react-router";
 import { BackButton } from "@/features/student-portal/components/BackButton";
+import { useApplications } from "@/features/student-portal/state/ApplicationContext";
 // ─── App ──────────────────────────────────────────────────────────────────────
 // ─── App ──────────────────────────────────────────────────────────────────────
 export default function App() {
+  const { addApplication } = useApplications();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const page = (searchParams.get("view") as Page | null) ?? "home";
@@ -49,38 +51,92 @@ export default function App() {
   const [selectedAngebot, setSelectedAngebot] = useState<ModulAngebot | null>(null);
   const [showApplicationModal, setShowApplicationModal] = useState(false);
   const [motivationText, setMotivationText] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<ModulCategory | null>(null);
-
+  const selectedCategory =
+  (searchParams.get("category") as ModulCategory | null) ?? null;
   const navigateWithScroll = useCallback((targetPage: Page, targetSection?: string) => {
     setPage(targetPage);
     if (targetSection) {
       setScrollTarget(targetSection);
     }
-  }, []);
+  }, [setPage]);
+  useEffect(() => {
+  if (page === "modulwahl" && !selectedCategory) {
+    const nextParams = new URLSearchParams(searchParams);
 
+    nextParams.set("view", "modulwahlUebersicht");
+    nextParams.delete("category");
+
+    setSearchParams(nextParams, { replace: true });
+  }
+}, [page, selectedCategory, searchParams, setSearchParams]);
+useEffect(() => {
+  if (page === "angebotDetail" && !selectedAngebot) {
+    const nextParams = new URLSearchParams(searchParams);
+
+    nextParams.set(
+      "view",
+      selectedCategory ? "modulwahl" : "modulwahlUebersicht"
+    );
+
+    setSearchParams(nextParams, { replace: true });
+  }
+}, [
+  page,
+  selectedAngebot,
+  selectedCategory,
+  searchParams,
+  setSearchParams,
+]);
   const handleSelectAngebot = useCallback((angebot: ModulAngebot) => {
     setSelectedAngebot(angebot);
     setPage("angebotDetail");
-  }, []);
+  }, [setPage]);
 
-  const handleSelectCategory = useCallback((category: ModulCategory) => {
-    setSelectedCategory(category);
-    setPage("modulwahl");
-  }, []);
+  const handleSelectCategory = useCallback(
+  (category: ModulCategory) => {
+    const nextParams = new URLSearchParams(searchParams);
 
+    nextParams.set("view", "modulwahl");
+    nextParams.set("category", category);
+
+    setSearchParams(nextParams);
+  },
+  [searchParams, setSearchParams],
+);
   const handleApplyFromDetail = useCallback(() => {
     setMotivationText("");
     setShowApplicationModal(true);
   }, []);
 
   const handleApply = useCallback(() => {
-    if (selectedAngebot) {
-      // Application logic here - this would normally add to applications list
-      setShowApplicationModal(false);
-      setMotivationText("");
-      alert(`Bewerbung für "${selectedAngebot.titel}" wurde erfolgreich eingereicht.`);
-    }
-  }, [selectedAngebot]);
+    if (!selectedAngebot || !selectedCategory) {
+      return;
+      }
+    const wasAdded = addApplication({
+    angebot: selectedAngebot,
+    kategorie: selectedCategory,
+    motivationText,
+  });
+
+  if (!wasAdded) {
+    alert("Sie haben sich bereits für dieses Angebot beworben.");
+    return;
+  }
+
+  setShowApplicationModal(false);
+  setMotivationText("");
+  setPage("modulwahl");
+
+  alert(
+    `Die Bewerbung für "${selectedAngebot.titel}" wurde zur Prioritätenliste hinzugefügt.`,
+  );
+}, [
+  selectedAngebot,
+  selectedCategory,
+  motivationText,
+  addApplication,
+  setPage,
+]);  
 
   return (
     <DndProvider backend={HTML5Backend}>
@@ -94,10 +150,18 @@ export default function App() {
           {page !== "home" && <BackButton />}
           {page === "home" && <HomePage setPage={setPage} />}
           {page === "modulwahlUebersicht" && (<ModulwahlUebersichtPage setPage={setPage} onSelectCategory={handleSelectCategory}/>)}
-          {page === "bewerbungen" && <BewerbungenPage setPage={setPage} scrollTarget={scrollTarget} clearScrollTarget={() => setScrollTarget(null)} onSelectCategory={handleSelectCategory} />}
-          {page === "stundenplan" && <StundenplanPage setPage={setPage} />}
+{page === "bewerbungen" && (
+  <BewerbungenPage setPage={setPage} />
+)}          {page === "stundenplan" && <StundenplanPage setPage={setPage} />}
           {page === "kurse" && <MeineKursePage setPage={setPage} />}
-          {page === "modulwahl" && <ModulwahlPage onSelectAngebot={handleSelectAngebot} setPage={setPage} navigateWithScroll={navigateWithScroll} selectedCategory={selectedCategory} />}
+{page === "modulwahl" && selectedCategory && (
+  <ModulwahlPage
+    onSelectAngebot={handleSelectAngebot}
+    setPage={setPage}
+    navigateWithScroll={navigateWithScroll}
+    selectedCategory={selectedCategory}
+  />
+)}
           {page === "bmi2018" && <BMI2018Page setPage={setPage} />}
           {page === "studienverlaufsplan" && <StudienverlaufsplanPage setPage={setPage} navigateWithScroll={navigateWithScroll} />}
           {page === "angebotDetail" && selectedAngebot && <AngebotDetailPage angebot={selectedAngebot} setPage={setPage} onApply={handleApplyFromDetail} />}
@@ -106,6 +170,7 @@ export default function App() {
            {showApplicationModal && selectedAngebot && (
           <ApplicationModal
             angebot={selectedAngebot}
+            selectedCategory={selectedCategory}
             motivationText={motivationText}
             onMotivationTextChange={setMotivationText}
             onCancel={() => {

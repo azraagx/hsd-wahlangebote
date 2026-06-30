@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
-import type { Page } from "@/features/student-portal/types";
+import { useState } from "react";
+import type { Page, StudentApplication} from "@/features/student-portal/types";
 import { MeinBereichSubNav } from "@/features/student-portal/components/MeinBereichSubNav";
 import { StatusBadge } from "@/features/student-portal/components/StatusBadge";
-import { studentPortalService } from "@/features/student-portal/services/studentPortalService";
-import {
+import { useApplications } from "@/features/student-portal/state/ApplicationContext";import {
   HSD_BLUE,
   HSD_BORDER,
   HSD_BORDER_LIGHT,
@@ -11,43 +10,45 @@ import {
   HSD_GRAY,
   HSD_TEAL,
 } from "@/features/student-portal/styles/tokens";
+import { ApplicationViewModal } from "@/features/student-portal/components/ApplicationViewModal";
+export function BewerbungenPage({
+  setPage,
+}: {
+  setPage: (p: Page) => void;
+}) {
+  const [categoryFilter, setCategoryFilter] =
+    useState<string>("Alle");
 
-export function BewerbungenPage({ setPage, scrollTarget, clearScrollTarget }: { setPage: (p: Page) => void; scrollTarget: string | null; clearScrollTarget: () => void}) {
-  const [categoryFilter, setCategoryFilter] = useState<string>("Alle");
-  const applications = studentPortalService.getApplications();
+  const [selectedApplication, setSelectedApplication] =
+    useState<StudentApplication | null>(null);
+
+  const { submittedApplications } = useApplications();
+  const applications = submittedApplications;
 
   const filteredBewerbungen = applications.filter((bewerbung) => {
-  if (categoryFilter === "Alle") {
-    return true;
-  }
-
-  if (categoryFilter === "Vertiefungen") {
-    return bewerbung.typ.includes("Vertiefung") || bewerbung.modul.includes("Vertiefung");
+    if (categoryFilter === "Alle") {
+      return true;
+    }
+if (categoryFilter === "Vertiefungen") {
+    return [
+      "Vertiefung A",
+      "Vertiefung B",
+      "Vertiefung C",
+      "Vertiefung D",
+    ].includes(bewerbung.kategorie);
   }
 
   if (categoryFilter === "Medienprojekte") {
-    return bewerbung.typ.includes("Medienprojekt") || bewerbung.modul.includes("Medienprojekt");
+    return bewerbung.kategorie.startsWith("Medienprojekt");
   }
 
   if (categoryFilter === "Informatikprojekte") {
-    return bewerbung.typ.includes("Informatikprojekt") || bewerbung.modul.includes("Informatikprojekt");
+    return bewerbung.kategorie.startsWith("Informatikprojekt");
   }
 
-  return bewerbung.typ === categoryFilter || bewerbung.modul.includes(categoryFilter);
+  return bewerbung.kategorie === categoryFilter;
 });
-
-  useEffect(() => {
-    if (scrollTarget) {
-      const element = document.getElementById(scrollTarget);
-      if (element) {
-        setTimeout(() => {
-          element.scrollIntoView({ behavior: "smooth", block: "start" });
-          clearScrollTarget();
-        }, 100);
-      }
-    }
-  }, [scrollTarget, clearScrollTarget]);
-
+  
   return (
     <div>
       <div className="mb-6 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
@@ -67,29 +68,6 @@ export function BewerbungenPage({ setPage, scrollTarget, clearScrollTarget }: { 
       </div>
 
       <MeinBereichSubNav page="bewerbungen" setPage={setPage} />
-
-      {/* Summary cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-5">
-        {[
-          { label: "Gesamt", value: applications.length, color: HSD_BLUE, bg: "#e0f4f8" },
-          { label: "Angenommen", value: applications.filter(b => b.status === "angenommen").length, color: "#155724", bg: "#D4EDDA" },
-          { label: "In Bearbeitung", value: applications.filter(b => b.status === "in_bearbeitung").length, color: "#856404", bg: "#FFF3CD" },
-          { label: "Abgelehnt", value: applications.filter(b => b.status === "abgelehnt").length, color: "#842029", bg: "#F8D7DA" },
-        ].map((stat) => (
-          <div
-            key={stat.label}
-            className="rounded-lg p-4"
-            style={{ backgroundColor: stat.bg, border: `1px solid ${HSD_BORDER}` }}
-          >
-            <p className="text-2xl font-bold" style={{ color: stat.color, fontFamily: "'Segoe UI', sans-serif" }}>
-              {stat.value}
-            </p>
-            <p className="text-xs mt-0.5" style={{ color: HSD_GRAY, fontFamily: "'Segoe UI', sans-serif" }}>
-              {stat.label}
-            </p>
-          </div>
-        ))}
-      </div>
 
       {/* Category filters */}
       <div className="mb-6">
@@ -151,21 +129,31 @@ export function BewerbungenPage({ setPage, scrollTarget, clearScrollTarget }: { 
               >
                 <td className="px-5 py-4">
                   <p className="text-sm font-semibold" style={{ fontFamily: "'Segoe UI', sans-serif", color: HSD_DARK }}>
-                    {b.name}
+                    {b.titel}
                   </p>
                   <p className="text-xs" style={{ fontFamily: "'Segoe UI', sans-serif", color: HSD_GRAY }}>
-                    {b.modul}
+                    Angebot #{b.angebotId}
                   </p>
+                  {b.motivationText && (
+                    <button
+                      type="button"
+                      onClick={() => setSelectedApplication(b)}
+                      className="mt-2 text-xs font-semibold hover:underline"
+                      style={{ color: HSD_BLUE }}
+                    >
+                      Bewerbung einsehen
+                    </button>
+                  )}
                 </td>
                 <td className="px-5 py-4">
                   <span
                     className="text-xs font-medium px-2 py-0.5 rounded"
                     style={{
-                      backgroundColor: b.typ === "Vertiefung" ? "#e0f4f8" : "#f0f0f8",
-                      color: b.typ === "Vertiefung" ? HSD_TEAL : "#5a5a9a",
+                      backgroundColor: b.kategorie === "Vertiefung" ? "#e0f4f8" : "#f0f0f8",
+                      color: b.kategorie === "Vertiefung" ? HSD_TEAL : "#5a5a9a",
                     }}
                   >
-                    {b.typ}
+                    {b.kategorie}
                   </span>
                 </td>
                 <td className="px-5 py-4">
@@ -193,10 +181,10 @@ export function BewerbungenPage({ setPage, scrollTarget, clearScrollTarget }: { 
             <div className="flex items-start justify-between gap-3 mb-2">
               <div>
                 <p className="text-sm font-semibold" style={{ fontFamily: "'Segoe UI', sans-serif", color: HSD_DARK }}>
-                  {b.name}
+                  {b.titel}
                 </p>
                 <p className="text-xs" style={{ fontFamily: "'Segoe UI', sans-serif", color: HSD_GRAY }}>
-                  {b.modul} · {b.typ}
+                  {b.kategorie} · Angebot #{b.angebotId}
                 </p>
               </div>
               <StatusBadge status={b.status} />
@@ -207,6 +195,12 @@ export function BewerbungenPage({ setPage, scrollTarget, clearScrollTarget }: { 
           </div>
         ))}
       </div>
+      {selectedApplication && (
+        <ApplicationViewModal
+          application={selectedApplication}
+          onClose={() => setSelectedApplication(null)}
+        />
+      )}
       </div>
   );
 }

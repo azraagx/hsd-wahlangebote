@@ -1,14 +1,10 @@
-import { bewerbungen, assignedCourses } from "@/features/student-portal/data/applications";
+import { assignedCourses } from "@/features/student-portal/data/applications";
 import { coursesBySemester } from "@/features/student-portal/data/courses";
 import { modulAngebote } from "@/features/student-portal/data/moduleOffers";
 import { schedule } from "@/features/student-portal/data/schedule";
 import type { ModulCategory } from "@/features/student-portal/types";
 
 export const studentPortalService = {
-  getApplications() {
-    return bewerbungen;
-  },
-
   getAssignedCourses() {
     return assignedCourses;
   },
@@ -22,7 +18,9 @@ export const studentPortalService = {
       return modulAngebote;
     }
 
-    return modulAngebote.filter((angebot) => angebot.modulCategory === category);
+    return modulAngebote.filter((angebot) =>
+      angebot.eligibleCategories.includes(category)
+    );
   },
 
   getSchedule() {

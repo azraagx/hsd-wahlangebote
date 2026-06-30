@@ -92,30 +92,42 @@ export function ElectionProcessInfo({
       </div>
 
       <div
-        className="grid gap-3 border-t pt-4 sm:grid-cols-2 lg:grid-cols-3"
-        style={{ borderColor: HSD_BORDER_LIGHT }}
+        className="grid gap-x-5 gap-y-3 border-t pt-4 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-[400px_repeat(3,220px)] xl:gap-x-8"        style={{ borderColor: HSD_BORDER_LIGHT }}
       >
         <div>
           <p className="text-xs font-semibold uppercase" style={{ color: HSD_GRAY }}>
             Bewerbungsschluss
           </p>
-          <p className="mt-1 text-sm font-semibold" style={{ color: HSD_DARK }}>
+          <p className="mt-1 whitespace-pre-line text-sm  font-semibold" style={{ color: HSD_DARK }}>
             {applicationDeadline}
           </p>
         </div>
 
-        {rounds.map((round) => (
-          <div key={round.label}>
-            <p className="text-xs font-semibold uppercase" style={{ color: HSD_GRAY }}>
+        
+{rounds.map((round, index) => (
+  <div
+    key={round.label}
+    className={
+      index === 3
+        ? "lg:col-start-2"
+        : index === 4
+          ? "lg:col-start-3"
+          : undefined
+    }
+  >
+            <p className="mt-1 text-sm font-semibold" style={{ color: HSD_DARK }}
+            >
               {round.label}
             </p>
-            <p className="mt-1 text-sm font-semibold" style={{ color: HSD_DARK }}>
-              {round.deadline}
-            </p>
+            <p className="m-1 text-sm font-semibold"
+                style={{ color: HSD_DARK}}
+                >
+                  {round.deadline}
+                </p>
           </div>
         ))}
       </div>
-
+      
       <button
         type="button"
         aria-expanded={isOpen}

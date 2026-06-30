@@ -16,8 +16,8 @@ export function HomePage({ setPage }: { setPage: (p: Page) => void }) {
       description: "Informatik trifft auf kreative Mediengestaltung. Entwickeln Sie innovative digitale Lösungen.",
       image: imgCourse,
       buttons: [
-        { label: "PO 2018", action: () => setPage("studienverlaufsplan") },
-        { label: "PO 2025", action: () => setPage("bmi2018") }
+        { label: "PO 2018", action: () => setPage("studienverlaufsplan"),disabled: false, },
+        { label: "PO 2025", action: () => {},disabled: true }
       ]
     },
     {
@@ -26,8 +26,8 @@ export function HomePage({ setPage }: { setPage: (p: Page) => void }) {
       description: "Technik und Medien vereint. Von der Audiotechnik bis zur Videoproduktion.",
       color: "#E17055",
       buttons: [
-        { label: "PO 2018", action: () => { } },
-        { label: "PO 2025", action: () => { } }
+        { label: "PO 2018", action: () => { }, disabled: true,},
+        { label: "PO 2025", action: () => { }, disabled: true,}
       ]
     },
     {
@@ -36,21 +36,12 @@ export function HomePage({ setPage }: { setPage: (p: Page) => void }) {
       description: "Vertiefen Sie Ihr Wissen in Human-Computer Interaction, Data Science oder Software Engineering.",
       color: "#6C5CE7",
       buttons: [
-        { label: "PO 2018", action: () => { } },
-        { label: "PO 2025", action: () => { } }
+        { label: "PO 2018", action: () => { },disabled: true, },
+        { label: "PO 2025", action: () => { }, disabled: true,}
       ]
     },
-    {
-      id: "wahlangebote",
-      title: "Wahlangebote",
-      description: "Studiengangsübergreifende Wahlmodule und Vertiefungen für alle Studierenden.",
-      color: "#00B894",
-      buttons: [
-        { label: "Zu den Angeboten", action: () => setPage("modulwahl") }
-      ]
-    }
+    
   ];
-
   return (
     <div>
       <div className="mb-8">
@@ -102,13 +93,14 @@ export function HomePage({ setPage }: { setPage: (p: Page) => void }) {
                   <button
                     key={idx}
                     onClick={btn.action}
+                    disabled={btn.disabled}
                     className="flex-1 py-2.5 rounded-lg text-sm font-semibold transition-colors hover:opacity-90"
                     style={{
                       backgroundColor: idx === 0 ? HSD_RED : HSD_BLUE,
                       color: "white",
                       fontFamily: "'Segoe UI', sans-serif"
                     }}
-                  >
+                    >
                     {btn.label}
                   </button>
                 ))}

@@ -10,9 +10,18 @@ import PublishedList from "@/features/teacher-portal/pages/PublishedList";
 import PublishedDetail from "@/features/teacher-portal/pages/PublishedDetail";
 import ApplicationsReview from "@/features/teacher-portal/pages/ApplicationsReview";
 import StudentPortalPage from "@/features/student-portal/pages/StudentPortalPage";
+import { ApplicationProvider } from "@/features/student-portal/state/ApplicationContext";
 
+
+function StudentPortalWithApplications() {
+  return (
+    <ApplicationProvider>
+      <StudentPortalPage />
+    </ApplicationProvider>
+  );
+}
 export const router = createBrowserRouter([
-  { path: "/student", Component: StudentPortalPage },
+  { path: "/student", Component: StudentPortalWithApplications },
   {
     path: "/lehrender",
     Component: Layout,

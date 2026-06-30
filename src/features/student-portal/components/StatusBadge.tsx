@@ -7,6 +7,11 @@ interface StatusBadgeProps {
 
 export function StatusBadge({ status }: StatusBadgeProps) {
   const statusConfig = {
+    entwurf: {
+  label: "Entwurf",
+  bg: "#E2E3E5",
+  color: "#41464B",
+},
     angenommen: { label: "Angenommen", color: "#00a65a", bg: "#e8f5e9" },
     in_bearbeitung: { label: "In Bearbeitung", color: "#f39c12", bg: "#fff8e1" },
     abgelehnt: { label: "Abgelehnt", color: HSD_RED, bg: "#fdecea" },

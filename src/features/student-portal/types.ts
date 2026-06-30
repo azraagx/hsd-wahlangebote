@@ -22,16 +22,7 @@ export type ModulCategory =
   | "Wissenschaftliche Vertiefung"
   | "Individuelle Vertiefung";
 
-export type StatusType = "angenommen" | "in_bearbeitung" | "abgelehnt";
-
-export interface Bewerbung {
-  id: number;
-  name: string;
-  typ:  "Vertiefung" | "Vertiefung A" | "Vertiefung B";
-  datum: string;
-  status: StatusType;
-  modul: string;
-}
+export type StatusType = "angenommen" | "in_bearbeitung" | "abgelehnt" | "entwurf";
 
 export type CourseActionType = "openOffers" | "openCourse";
 
@@ -49,6 +40,7 @@ export interface Course {
   color: string;
   category?: ModulCategory;
   isPlaceholder?: boolean;
+  action?: CourseAction;
 }
 
 export interface ScheduleEntry {
@@ -71,7 +63,7 @@ export interface ModulAngebot {
   platze: number;
   semester: string;
   modulTyp: string;
-  modulCategory: ModulCategory;
+  eligibleCategories: ModulCategory[];
   status: "Open" | "Few spots left" | "Closed";
   deadline: string;
   inhalteZiele: string[];
@@ -101,6 +93,8 @@ export interface StudentApplication {
   angebotId: number;
   titel: string;
   kategorie: string;
-  status: "pending" | "accepted" | "rejected";
+  status: StatusType;
   prioritat: number;
+  datum?: string;
+  motivationText?: string;
 }
