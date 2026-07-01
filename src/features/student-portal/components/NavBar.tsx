@@ -30,11 +30,11 @@ export function NavBar({ page, setPage }: { page: Page; setPage: (p: Page) => vo
         className="fixed top-0 left-0 right-0 bg-white"
         style={{ borderBottom: `0.8px solid ${HSD_BORDER_LIGHT}`, height: "61px", zIndex: 50 }}
       >
-        <div className="flex items-stretch h-full px-4 max-w-[1440px] mx-auto">
+        <div className="flex items-stretch px-1 h-full sm:px-4 max-w-[1440px] mx-auto">
           {/* Logo */}
-          <div className="flex items-center pr-6" style={{ minWidth: "100px" }}>
+          <div className="flex min-w-[50px] items-center pr-1 sm:pr-6 sm:min-w-[100px]" >
             <span
-              className="font-['Inter',sans-serif] font-normal text-[38px] uppercase leading-none cursor-pointer"
+              className="font-['Inter',sans-serif] font-normal text-[25px] sm:text-[38px] uppercase leading-none cursor-pointer"
               style={{ color: HSD_RED }}
               onClick={() => setPage("home")}
             >
@@ -43,13 +43,11 @@ export function NavBar({ page, setPage }: { page: Page; setPage: (p: Page) => vo
           </div>
 
           {/* Main nav – overflow visible so dropdown escapes the row */}
-          <div className="flex items-stretch flex-1" style={{ overflow: "visible" }}>
+          <div className="flex min-w-0 items-stretch flex-1" style={{ overflow: "visible" }}>
             {/* Startseite */}
             <button
-              className="flex items-center px-3 text-sm whitespace-nowrap transition-colors hover:text-[#00afd7] border-t-2 border-b-2"
-              style={{
+                className="flex items-center px-1.5 text-[13px] sm:px-3 sm:text-[14.5px] whitespace-nowrap transition-colors hover:text-[#00afd7] border-t-2 border-b-2"              style={{
                 fontFamily: "'Segoe UI', sans-serif",
-                fontSize: "14.5px",
                 color: page === "home" ? HSD_DARK : HSD_GRAY,
                 borderTopColor: "transparent",
                 borderBottomColor: page === "home" ? HSD_BLUE : "transparent",
@@ -62,7 +60,7 @@ export function NavBar({ page, setPage }: { page: Page; setPage: (p: Page) => vo
             {/* Mein Bereich dropdown */}
             <div className="relative flex items-stretch">
               <button
-                className="flex items-center gap-1.5 px-3 text-sm whitespace-nowrap border-t-2 border-b-2 transition-colors"
+                className="flex items-center gap-1 px-1.5 text-[13px] sm:gap-1.5 sm:px-3 sm:text-[14.5px] whitespace-nowrap border-t-2 border-b-2 transition-colors"
                 style={{
                   fontFamily: "'Segoe UI', sans-serif",
                   fontSize: "14.5px",
@@ -125,12 +123,17 @@ export function NavBar({ page, setPage }: { page: Page; setPage: (p: Page) => vo
               )}
             </div>
 
-            {/* Other nav items */}
+            {/* Other nav items – erst auf großen Displays anzeigen */}
+          <div className="hidden lg:flex items-stretch">
             {["Personen", "Service", "Webseite Medien", "Hilfe"].map((item) => (
               <button
                 key={item}
                 className="flex items-center gap-1.5 px-3 text-sm whitespace-nowrap border-t-2 border-b-2 border-transparent hover:text-[#1d2125] transition-colors"
-                style={{ fontFamily: "'Segoe UI', sans-serif", fontSize: "14.5px", color: HSD_GRAY }}
+                style={{
+                  fontFamily: "'Segoe UI', sans-serif",
+                  fontSize: "14.5px",
+                  color: HSD_GRAY,
+                }}
               >
                 {item}
                 <svg width="9" height="9" viewBox="0 0 9 9" fill="currentColor">
@@ -139,9 +142,9 @@ export function NavBar({ page, setPage }: { page: Page; setPage: (p: Page) => vo
               </button>
             ))}
           </div>
-
+        </div>
           {/* Right actions */}
-          <div className="flex items-center gap-3 pl-4" style={{ borderLeft: `0.8px solid ${HSD_BORDER_LIGHT}` }}>
+          <div className="hidden md:flex items-center gap-3 pl-4" style={{ borderLeft: `0.8px solid ${HSD_BORDER_LIGHT}` }}>
             <button className="text-gray-500 hover:text-gray-700 text-base">🔔</button>
             <button className="text-gray-500 hover:text-gray-700 text-base">💬</button>
             <div className="w-px h-8 mx-1" style={{ backgroundColor: HSD_BORDER_LIGHT }} />

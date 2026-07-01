@@ -144,7 +144,7 @@ useEffect(() => {
         <NavBar page={page} setPage={setPage} />
 
         <main
-          className="mx-auto px-6 py-6"
+          className="mx-auto px-4 py-6 sm:px-6"
           style={{ maxWidth: page === "modulwahl" ? "1400px" : "1200px", paddingTop: "calc(61px + 24px)" }}
         >
           {page !== "home" && <BackButton />}
